@@ -1,5 +1,6 @@
 from config import Config
 from flask import Flask, jsonify
+from app.controllers.todo_controller import bp as todo_controller
 from app.extensions import db, api, cors,migrate
 
 ## import the entities and database instance
@@ -17,5 +18,7 @@ def create_app():
     @app.route('/')
     def hello_world():
         return 'Hello, World!'
+    
+    app.register_blueprint(todo_controller)
 
     return app
