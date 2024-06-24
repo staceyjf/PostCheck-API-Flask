@@ -1,0 +1,22 @@
+import os
+from dotenv import load_dotenv
+
+basedir = os.path.abspath(os.path.dirname(__file__))
+
+load_dotenv(os.path.join(basedir, ".env"))
+
+class Config:
+    DB_PASSWORD = os.environ.get('DB_PASSWORD')
+    DB_USERNAME = os.environ.get('DB_USERNAME')
+    DB_HOST = os.environ.get('DB_HOST', 'localhost')
+    DB_NAME = os.environ.get('DB_NAME')
+    DB_PORT = os.environ.get('DB_PORT', '3306')
+    SQLALCHEMY_DATABASE_URI = f'mysql+pymysql://{DB_USERNAME}:{DB_PASSWORD}@{DB_HOST}:{DB_PORT}/{DB_NAME}'
+    SQLALCHEMY_TRACK_MODIFICATIONS = False
+    JSONIFY_PRETTYPRINT_REGULAR = True
+    API_TITLE = "FlaskTasker"
+    API_VERSION = "v1"
+    OPENAPI_URL_PREFIX = "/"
+    OPENAPI_SWAGGER_UI_PATH = "/docs"
+    OPENAPI_VERSION = "3.0.3"
+    OPENAPI_SWAGGER_UI_URL = "https://cdn.jsdelivr.net/npm/swagger-ui-dist/"
