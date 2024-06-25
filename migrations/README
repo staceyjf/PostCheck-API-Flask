@@ -1,13 +1,1 @@
-# Welcome to PostChecker-API - the Flask verison
-
-A Flask backend powered by mySql with a TypeScript React frontend demo.
-
-<div align="center">
-  <img src="../planning /postcheckAPI.gif" alt="Homepage">
-</div>
-
-## About
-
-Having built these API in Springboot, I wanted to explore implementing JWT auth in other frameworks so I thought I'd kill two birds with one stone and rebuilt my Postcheck API in Flask to brush up on my Python skills and also continue to practice implementing JWT auth.
-
-This is a work in progress so watch this space.
+Single-database configuration for Flask.
