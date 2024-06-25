@@ -1,7 +1,11 @@
-from sqlalchemy import select
 from app.extensions import db
-from app.models.models import PostCode
+from app.models.models import PostCode, Suburb
 
-class PostcodeRepository:
-    def get_all_postcodes(self):
-        return PostCode.query.all()
+def repo_get_all_postcodes():
+        return PostCode.query.all() 
+    
+def repo_create_postcode_with_suburbs(data):
+    new_postcode = PostCode(postcode=data)
+    db.session.add(new_postcode)
+    db.session.commit()
+    return new_postcode
