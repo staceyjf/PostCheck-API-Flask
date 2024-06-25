@@ -2,8 +2,10 @@
 
 A revised backend API as an alternative to my existing SpringBoot app (available [here](https://github.com/staceyjf/PostCheck-API)) to investigate how JWT can be implemented across different frameworks.
 
+This API will work hadn in hand with the Typescript React app (available [here](https://github.com/staceyjf/Postcheck-front)) which is being demo'ed below.
+
 <div align="center">
-  <img src="./planning/postcheckAPI.gif" alt="Homepage">
+  <img src="./planning /postcheckAPI.gif" alt="Homepage">
 </div>
 
 ## Build Steps
