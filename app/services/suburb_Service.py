@@ -14,9 +14,10 @@ def get_suburb_by_id(id):
     return maybe_suburb
 
 def create_suburb(data):
-    # removing trailing whitespace
-    data['name'].strip()
-    data['state'].strip() 
+    # basic data cleaning
+    cleaned_data = {}
+    cleaned_data['name'] = data['name'].strip()
+    cleaned_data['state'] = data['state'].strip().upper()  
     
     # Convert string to ENUM
     state_enum = None
@@ -31,11 +32,11 @@ def create_suburb(data):
         raise ValueError(f"{data['state']} is not a valid state. Must be one of: {valid_states}")
     
     # Update to ENUM
-    data['state'] = state_enum
+    cleaned_data['state'] = state_enum
         
-    created_suburb = repo_create_suburb(data)
+    created_suburb = repo_create_suburb(cleaned_data)
     if not created_suburb:
-        logging.error(f"Failed to create a new suburb in the database for state: {data['state']}")
+        logging.error(f"Failed to create a new suburb in the database for state: {cleaned_data['state']}")
         raise Exception("Failed to create a new suburb in the db")
     
     return created_suburb

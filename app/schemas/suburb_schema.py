@@ -6,7 +6,7 @@ class EnumField(fields.Field):
     def _serialize(self, value, attr, obj, **kwargs): # additional Marshmellow args need to be supplied for the serialization method
         if value is None:
             return None
-        return value.name 
+        return value.value 
 
 class SuburbSchema(Schema):
     id = fields.Int(dump_only=True) 
