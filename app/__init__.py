@@ -1,6 +1,7 @@
 from config import Config
 from flask import Flask, jsonify
 from app.controllers.postcode_controller import bp as postcode_controller
+from app.controllers.suburb_controller import bp as suburb_controller
 from app.extensions import db, api, cors,migrate
 
 ## import the entities and database instance
@@ -20,5 +21,6 @@ def create_app():
         return 'Hello, World!'
     
     app.register_blueprint(postcode_controller)
+    app.register_blueprint(suburb_controller)
 
     return app

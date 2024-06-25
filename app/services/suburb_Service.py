@@ -1,4 +1,4 @@
-from app.repositories.postcode_repository import repo_get_all_suburbs, repo_get_suburb_by_id, repo_create_suburb
+from app.repositories.suburb_repository import repo_get_all_suburbs, repo_get_suburb_by_id, repo_create_suburb
 import logging # Task: review a better logging strategy in the config
 
 def get_all_suburbs():
