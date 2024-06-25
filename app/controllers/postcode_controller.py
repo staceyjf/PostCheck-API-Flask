@@ -18,6 +18,14 @@ def fetch_all_postcodes():
     return all_postcodes
 
 #TASK: add get by id
+# @bp.route('/<int:id>', methods=['GET'])
+# @bp.response(200, PostCodeSchema())
+# def get_postcode_by_id(id):
+#     found_postcode = get_postcode_by_id(id)
+#     if not found_postcode:
+#         return jsonify({'message': 'Postcode not found'}), 404
+#     print(f"Found postcode: {found_postcode}")
+#     return found_postcode
 
 '''CREATE'''
 @bp.route('/', methods=['POST'])
@@ -33,22 +41,22 @@ def create_new_postcode():
     # Manually loading to add error handling
     try:
         data = schema.load(req_body)
-    except ValidationError as err:
+    except ValidationError as e:
         logging.error("There was an error mapping request to the postcode schema")
-        return jsonify(err.messages), 422
+        return jsonify(e.messages), 422
 
     # handle any errors raised in the service level
     try:
         new_postcode = create_postcode(data)
-    except ValueError as ve:
-        logging.error(f"Validation error: {ve}")
-        return jsonify({'message': str(ve)}), 400
+    except ValueError as e:
+        logging.error(f"Validation error: {e}")
+        return jsonify({'message': str(e)}), 400
     except Exception as e:
         logging.error(f"Error in creating a new postcode: {e}")
         return jsonify({'message': 'Failed to create postcode'}), 500
 
     logging.info(f"Created postcode: {new_postcode}")
-    return jsonify(new_postcode), 201
+    return new_postcode, 201
 
 # '''UPDATE'''
 # @bp.route('/<int:id>', methods=['PATCH'])
@@ -76,11 +84,3 @@ def create_new_postcode():
 #     return updated_postcode
 
 '''DELETE'''
-# @bp.route('/<int:id>', methods=['DELETE'])
-# @bp.response(200, PostCodeSchema())
-# def get_postcode_by_id(id):
-#     found_postcode = get_postcode_by_id(id)
-#     if not found_postcode:
-#         return jsonify({'message': 'Postcode not found'}), 404
-#     print(f"Found postcode: {found_postcode}")
-#     return found_postcode
