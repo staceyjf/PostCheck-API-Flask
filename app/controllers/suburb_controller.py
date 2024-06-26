@@ -22,7 +22,7 @@ def fetch_all_suburbs():
 def fetch_suburb_by_id(id): #captured as a view arg 
     found_suburb = get_suburb_by_id(id)
     if not found_suburb:
-        return jsonify({'message': 'Suburb not found'}), 404
+        return jsonify({'message': f'Suburb with id: {id} not found'}), 404
     logging.info(f"Found suburb: {found_suburb}")
     return found_suburb
 

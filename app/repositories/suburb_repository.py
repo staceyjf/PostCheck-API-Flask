@@ -9,9 +9,7 @@ def repo_get_suburb_by_id(suburb_id):
     return found_suburb
 
 def repo_create_suburb(data):
-    print(data)
     new_suburb = Suburb(name=data['name'], state=data['state']) # align it to a State ENUM
-    print(new_suburb)
     db.session.add(new_suburb)
     db.session.commit()
     return new_suburb

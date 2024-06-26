@@ -7,10 +7,7 @@ def get_all_suburbs():
 
 def get_suburb_by_id(id):
     maybe_suburb = repo_get_suburb_by_id(id)
-    if not maybe_suburb:
-        logging.error(f"There was an error when finding suburb with id: {id} in the db")
-        raise Exception("Failed to find suburb with id: {id}")
-    
+
     return maybe_suburb
 
 def create_suburb(data):

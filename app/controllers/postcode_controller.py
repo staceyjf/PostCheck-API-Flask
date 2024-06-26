@@ -1,6 +1,6 @@
 from flask import request, jsonify
 from marshmallow import ValidationError
-from app.services.postcode_service import get_all_postcodes, create_postcode
+from app.services.postcode_service import get_all_postcodes, create_postcode, get_postcode_by_id
 from flask_smorest import Blueprint
 from app.schemas.postcode_schema import PostCodeSchema
 import logging # Task: review a better logging strategy in the config
@@ -17,15 +17,14 @@ def fetch_all_postcodes():
     logging.info(f"All postcodes successful sent with a count of {len(all_postcodes)} postcodes")
     return all_postcodes
 
-#TASK: add get by id
-# @bp.route('/<int:id>', methods=['GET'])
-# @bp.response(200, PostCodeSchema())
-# def get_postcode_by_id(id):
-#     found_postcode = get_postcode_by_id(id)
-#     if not found_postcode:
-#         return jsonify({'message': 'Postcode not found'}), 404
-#     print(f"Found postcode: {found_postcode}")
-#     return found_postcode
+@bp.route('/<int:id>', methods=['GET'])
+@bp.response(200, PostCodeSchema())
+def fetch_postcode_by_id(id):
+    found_postcode = get_postcode_by_id(id)
+    if not found_postcode:
+        return jsonify({'message': f'Postcode with id: {id} not found'}), 404    
+    logging.info(f"Found postcode: {found_postcode}")
+    return found_postcode
 
 '''CREATE'''
 @bp.route('/', methods=['POST'])
@@ -40,7 +39,7 @@ def create_new_postcode():
 
     # Manually loading to add error handling
     try:
-        data = schema.load(req_body)
+        data = schema.load(req_body)   # remember this is a dict
     except ValidationError as e:
         logging.error("There was an error mapping request to the postcode schema")
         return jsonify(e.messages), 422
