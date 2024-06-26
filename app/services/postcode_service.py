@@ -1,16 +1,20 @@
+from flask import current_app
 from app.repositories.postcode_repository import repo_get_all_postcodes, repo_get_postcode_by_id, repo_create_postcode_with_suburbs
 from app.services.suburb_Service import get_suburb_by_id
-import logging # Task: review a better logging strategy in the config
-
 
 def get_all_postcodes():
     return repo_get_all_postcodes()
 
 def get_postcode_by_id(id):
     maybe_postcode = repo_get_postcode_by_id(id)
+    current_app.logger.info(f"Get_postcode_by_id is sending back {maybe_postcode}")
     return maybe_postcode
 
 def create_postcode(data):
+    # check fields aren't blank
+    if not data.get('postcode'):
+        raise ValueError("The 'postcode' field cannot be blank.")
+
      # basic data cleaning
     cleaned_data = {}
     cleaned_data['postcode'] = data['postcode'].strip()
@@ -21,22 +25,22 @@ def create_postcode(data):
     if not cleaned_data['postcode'].isdigit():
         raise ValueError("Postcodes should be numerical")
     
-    # logic to add suburbs
-    # new_associatedSuburbs = []
-    # for suburb_id in data['suburbIds']:
-    #     suburb = get_suburb_by_id(suburb_id)
-    #     if suburb:
-    #         new_associatedSuburbs.append(suburb)
-    #     else:
-    #         raise Exception(f"Suburb with id:{suburb_id} not found")
+    # logic to add suburbs if they have been provided
+    suburb_ids = data.get('suburbIds')
+    if suburb_ids is not None and len(suburb_ids) != 0:
+        new_associatedSuburbs = []
+        for suburb_id in data['suburbIds']:
+            suburb = get_suburb_by_id(suburb_id)
+            if suburb:
+                new_associatedSuburbs.append(suburb)
+            else:
+                raise Exception(f"Suburb with id:{suburb_id} not found")
     
-    # add the suburbs to our dict
-    # cleaned_data['associatedSuburbs'] = new_associatedSuburbs
-    cleaned_data['suburbIds'] = data['suburbIds']
+        # add the suburbs to our dict
+        cleaned_data['associatedSuburbs'] = new_associatedSuburbs
+        # cleaned_data['suburbIds'] = data['suburbIds']
         
     created_postcode = repo_create_postcode_with_suburbs(cleaned_data)
-    if not created_postcode:
-        logging.error(f"There was an error in creating a new postcode in the db")
-        raise Exception("Failed to create a new todo")
-    
+    current_app.logger.info(f"Create_postcode is sending back {created_postcode}")
+
     return created_postcode

@@ -3,11 +3,28 @@ from flask import Flask, jsonify
 from app.controllers.postcode_controller import bp as postcode_controller
 from app.controllers.suburb_controller import bp as suburb_controller
 from app.extensions import db, api, cors,migrate
-
-## import the entities and database instance
 import app.models
+from logging.config import dictConfig
 
 def create_app():
+    # configure builtin Logging using Flask example
+    # TASK: Look into FileHandler and other configs for my needs
+    dictConfig({
+        'version': 1,
+        'formatters': {'all_info_logger': {
+            'format': '[%(asctime)s] %(levelname)s in %(module)s: %(message)s',
+        }}, 
+        'handlers': {'wsgi': {
+            'class': 'logging.StreamHandler',
+            'stream': 'ext://flask.logging.wsgi_errors_stream',
+            'formatter': 'all_info_logger'
+        }},
+        'root': {
+            'level': 'INFO',
+            'handlers': ['wsgi']
+        }
+    })
+
     app = Flask(__name__)
     
     app.config.from_object(Config)

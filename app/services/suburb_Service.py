@@ -1,16 +1,22 @@
+from flask import current_app
 from app.repositories.suburb_repository import repo_get_all_suburbs, repo_get_suburb_by_id, repo_create_suburb
 from app.models.models import State
-import logging # Task: review a better logging strategy in the config
 
 def get_all_suburbs():
     return repo_get_all_suburbs()
 
 def get_suburb_by_id(id):
     maybe_suburb = repo_get_suburb_by_id(id)
-
+    current_app.logger.info(f"get_suburb_by_id is sending back {maybe_suburb}")
     return maybe_suburb
 
 def create_suburb(data):
+    # check fields aren't blank
+    if not data.get('name'):
+        raise ValueError("The 'name' field cannot be blank.")
+    if not data.get('state'):
+        raise ValueError("The 'state' field cannot be blank.")
+
     # basic data cleaning
     cleaned_data = {}
     cleaned_data['name'] = data['name'].strip()
@@ -32,8 +38,6 @@ def create_suburb(data):
     cleaned_data['state'] = state_enum
         
     created_suburb = repo_create_suburb(cleaned_data)
-    if not created_suburb:
-        logging.error(f"Failed to create a new suburb in the database for state: {cleaned_data['state']}")
-        raise Exception("Failed to create a new suburb in the db")
-    
+    current_app.logger.info(f"create_suburb is sending back {created_suburb}")
+
     return created_suburb

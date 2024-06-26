@@ -15,15 +15,16 @@ def repo_create_postcode_with_suburbs(data):
     print(data)
     
     # logic to add suburbs
-    new_associatedSuburbs = []
-    for suburb_id in data['suburbIds']:
-        suburb = Suburb.query.get(suburb_id)  # querying each suburb by id 
-        if suburb:
-            new_associatedSuburbs.append(suburb)
-        else:
-            raise Exception(f"Suburb with id:{suburb_id} not found")
+    # new_associatedSuburbs = []
+    # for suburb_id in data['suburbIds']:
+    #     suburb = Suburb.query.get(suburb_id)  # querying each suburb by id 
+    #     if suburb:
+    #         new_associatedSuburbs.append(suburb)
+    #     else:
+    #         raise Exception(f"Suburb with id:{suburb_id} not found")
     
-    new_postcode = PostCode(postcode=data['postcode'], associatedSuburbs=new_associatedSuburbs)
+    # new_postcode = PostCode(postcode=data['postcode'], associatedSuburbs=new_associatedSuburbs)
+    new_postcode = PostCode(postcode=data['postcode'], associatedSuburbs=['associatedSuburbs'])
     db.session.add(new_postcode)
     db.session.commit()
     return new_postcode
