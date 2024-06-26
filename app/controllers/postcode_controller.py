@@ -19,12 +19,16 @@ def fetch_all_postcodes():
 @bp.route('/<int:id>', methods=['GET'])
 @bp.response(200, PostCodeSchema())
 def fetch_postcode_by_id(id):
-    found_postcode = get_postcode_by_id(id)
-    if not found_postcode:
-        current_app.logger.error(f"Postcode with id: {id} not found when sent to the service")
-        return jsonify({'message': f'Postcode with id: {id} not found'}), 404    
-    current_app.logger.info(f"Found postcode: {found_postcode}")
-    return found_postcode
+    try:
+        found_postcode = get_postcode_by_id(id)
+        if not found_postcode:
+            current_app.logger.error(f"Postcode with id: {id} not found when sent to the service")
+            return jsonify({'message': f'Postcode with id: {id} not found'}), 404    
+        current_app.logger.info(f"Found postcode: {found_postcode}")
+        return found_postcode
+    except Exception as e:
+        current_app.logger.error(f"Error fetching postcode with id: {id}, error: {e}")
+        return jsonify({'message': 'Failed to fetch postcode'}), 500
 
 '''CREATE'''
 @bp.route('/', methods=['POST'])

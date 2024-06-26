@@ -27,18 +27,20 @@ def create_postcode(data):
     
     # logic to add suburbs if they have been provided
     suburb_ids = data.get('suburbIds')
+    print(suburb_ids)
     if suburb_ids is not None and len(suburb_ids) != 0:
-        new_associatedSuburbs = []
-        for suburb_id in data['suburbIds']:
-            suburb = get_suburb_by_id(suburb_id)
-            if suburb:
-                new_associatedSuburbs.append(suburb)
-            else:
-                raise Exception(f"Suburb with id:{suburb_id} not found")
+    #     new_associatedSuburbs = []
+    #     for suburb_id in data['suburbIds']:
+    #         suburb = get_suburb_by_id(suburb_id)
+    #         if suburb:
+    #             print(f"Suburb ID: {suburb.id}, Name: {suburb.name}")
+    #             new_associatedSuburbs.append(suburb)
+    #         else:
+    #             raise Exception(f"Suburb with id:{suburb_id} not found")
     
-        # add the suburbs to our dict
-        cleaned_data['associatedSuburbs'] = new_associatedSuburbs
-        # cleaned_data['suburbIds'] = data['suburbIds']
+    #     # add the suburbs to our dict
+    #     cleaned_data['associatedSuburbs'] = new_associatedSuburbs
+        cleaned_data['suburbIds'] = data['suburbIds']
         
     created_postcode = repo_create_postcode_with_suburbs(cleaned_data)
     current_app.logger.info(f"Create_postcode is sending back {created_postcode}")
