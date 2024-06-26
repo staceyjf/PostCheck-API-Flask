@@ -4,6 +4,7 @@ from app.schemas.suburb_schema import SuburbSchema
 
 class PostCodeSchema(Schema):
     class Meta: # To maintain the order as they are defined when being serialized or deserialized
+        fields = ("id", "postcode", "suburbIds", "associatedSuburbs")
         ordered = True
         
     id = fields.Int(dump_only=True) 

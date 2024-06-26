@@ -17,6 +17,10 @@ class PostCode(db.Model):
     # Define the M:M relationship via the join table, Postcode owns the relationship (not a bi-direction so only need to update one way)
     associatedSuburbs = relationship("Suburb", secondary=postcode_suburb_association)
     
+    def __str__(self):
+        # TASK: think about how to get suburbs properly
+        return f"PostCode: {self.postcode}, associatedSuburbs: {self.associatedSuburbs}"
+    
 class State(Enum):
     NEW_SOUTH_WALES = 'NSW'
     VICTORIA = 'VIC'
@@ -32,3 +36,6 @@ class Suburb(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(100), nullable=False)
     state = Column(SQLEnum(State), nullable=False)
+    
+    def __str__(self):
+        return f"Suburb: {self.name}, State: {self.state.value}"
