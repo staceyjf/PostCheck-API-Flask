@@ -40,6 +40,6 @@ class Suburb(db.Model):
     state = Column(SQLEnum(State), nullable=False)
     associatedPostCodes = relationship("PostCode", secondary=postcode_suburb_association, back_populates="associatedSuburbs")
 
-    
+
     def __str__(self):
         return f"Suburb: {self.name}, State: {self.state.value}"

@@ -1,5 +1,8 @@
 from flask import current_app
-from app.repositories.postcode_repository import repo_get_all_postcodes, repo_get_postcode_by_id, repo_create_postcode_with_suburbs, repo_delete_by_id
+from app.repositories.postcode_repository import repo_get_all_postcodes, repo_get_postcode_by_id, repo_create_postcode_with_suburbs, repo_delete_by_id, repo_update_by_id
+from app.exceptions.CustomErrors import NotFoundException, ValidationError
+from sqlalchemy.orm.exc import NoResultFound
+from sqlalchemy.exc import IntegrityError
 
 def get_all_postcodes():
     return repo_get_all_postcodes()
@@ -21,7 +24,6 @@ def create_postcode(data):
     
     # logic to add suburbs if they have been provided
     suburb_ids = data.get('suburbIds', []) # see if we have ids or provide an empty []
-    print(suburb_ids)
     if suburb_ids:
         cleaned_data['suburbIds'] = data['suburbIds']
     
@@ -29,24 +31,33 @@ def create_postcode(data):
         created_postcode = repo_create_postcode_with_suburbs(cleaned_data)
         current_app.logger.info(f"Create_postcode is sending back {created_postcode}")
         return created_postcode
-    except ValueError as e:
-        current_app.logger.error(f"Error when creating the postcode in the db: {e}")
-        raise ValueError(f"Field needs to be unique")
+    except IntegrityError as e:
+        raise ValidationError(f"Validation error on creating postcode: {e}")
+    except NoResultFound as e:
+        raise NotFoundException(f"Suburb not found: {e}")
+        
 
 def get_postcode_by_id(id):
     try:
         found_postcode = repo_get_postcode_by_id(id)
         current_app.logger.info(f"Get_postcode_by_id is sending back {found_postcode}")
         return found_postcode
-    except ValueError as e:
-        error_message = f"Postcode with id:{id} not found"
-        current_app.logger.error(f"{error_message}: {e}")
-        raise ValueError(error_message)
+    except NoResultFound:
+        raise NotFoundException(f"Postcode with id: {id} not found")
+
     
 def delete_postcode_by_id(id):
     try:
         repo_delete_by_id(id)
-    except ValueError as e:
-        error_message = f"Postcode with id:{id} not found when trying to delete"
-        current_app.logger.error(f"{error_message}: {e}")
-        raise ValueError(error_message)
+    except NoResultFound:
+        raise NotFoundException(f"Postcode with id: {id} not found")
+
+def update_postcode_by_id(updated_data, id):
+    try:
+        updated_postcode = repo_update_by_id(updated_data,id)
+        current_app.logger.info(f"Get_postcode_by_id is sending back {updated_postcode}")
+        return updated_postcode
+    except NoResultFound:
+        raise NotFoundException(f"Postcode with id: {id} not found")
+    except IntegrityError as e:
+        raise ValidationError(f"Validation error on creating postcode: {e}")

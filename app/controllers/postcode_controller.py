@@ -1,10 +1,11 @@
 from flask import request, jsonify, current_app
 from flask.views import MethodView
 from marshmallow import ValidationError
-from app.services.postcode_service import get_all_postcodes, create_postcode, get_postcode_by_id, delete_postcode_by_id
+from app.services.postcode_service import get_all_postcodes, create_postcode, get_postcode_by_id, delete_postcode_by_id, update_postcode_by_id
 from flask_smorest import Blueprint, abort
 from app.schemas.postcode_schema import PostCodeSchema
 from app.schemas.postcode_schema_args import PostCodeSchemaArgs
+from app.exceptions.CustomErrors import NotFoundException, ValidationError
 
 # blueprint adds to the factory function / making it reusable
 bp = Blueprint('postcode', __name__, url_prefix='/api/v1/postcodes', description="Operations on postcodes")
@@ -34,9 +35,12 @@ class Postcodes(MethodView):
             new_postcode = create_postcode(data)
             current_app.logger.info(f"Created postcode: {new_postcode}")
             return new_postcode
-        except ValueError as e:
+        except ValidationError as e:
             current_app.logger.error(f"Validation error: {e}")
-            abort(400, message=f'Validation error: {e}') 
+            abort(400, message=f'Validation error: {e}')
+        except NotFoundException as e:
+            current_app.logger.error(f"Issue with a Suburb Id: {e}")
+            abort(404, message=f'Issue with a Suburb Id')     
         except Exception as e:
             current_app.logger.error(f"Error in creating a new postcode: {e}")
             abort(500, message="Failed to create postcode") 
@@ -53,7 +57,7 @@ class PostCodeById(MethodView):
             found_postcode = get_postcode_by_id(id)  
             current_app.logger.info(f"Found postcode: {found_postcode}")
             return found_postcode
-        except ValueError as e:
+        except NotFoundException as e:
             current_app.logger.error(f"Postcode with id: {id} not found when sent to the service with e: {e}")
             abort(404, message=f'Postcode with id: {id} not found')
             
@@ -64,33 +68,27 @@ class PostCodeById(MethodView):
         Deletes a postcode by Id.
         """
         try: 
-            found_postcode = delete_postcode_by_id(id)  
+            delete_postcode_by_id(id)  
             current_app.logger.info(f"Postcode with {id} has been delete.")
-        except ValueError as e:
-            current_app.logger.error(f"Postcode with id: {id} not found when sent to the service with e: {e}")
+        except NotFoundException as e:
+            current_app.logger.error(f"Error: {e}")
             abort(404, message=f'Postcode with id: {id} not found when trying to delete')    
 
-    # @bp.arguments(PostCodeSchemaArgs) 
-    # @bp.response(200, PostCodeSchema())
-    # def get_postcode_by_id(id):
-    #     res_body = request.get_json()
-    #     if not res_body:
-    #         current_app.logger.error(f"No input data was provided at updating postcode with id: {id}")
-    #         return jsonify({'message': 'No input data provided'}), 400
+    @bp.arguments(PostCodeSchemaArgs) 
+    @bp.response(200, PostCodeSchema())
+    def patch(self, data, id):
+        """Update a postcode by Id
+                
+        Updates a postcode by Id.
+        """
+        try:
+            updated_postcode = update_postcode_by_id(data, id)
+            current_app.logger.info(f"Updated postcode: {updated_postcode}")
+            return updated_postcode
+        except NotFoundException as e:
+            current_app.logger.error(f"Error: {e}")
+            abort(404, message=f'Postcode with id: {id} not found when trying to update')
         
-    #     schema = PostCodeSchema()
         
-    #     try:
-    #         data = schema.load(res_body) 
-    #     except ValidationError as err:
-    #         current_app.logger.error(f"There was an error mapping request to the postcode schema")
-    #         return jsonify(err.messages), 422
         
-    #     updated_postcode = update_postcode(id, data)
-    #     if not updated_postcode:
-    #         current_app.logger.error(f"Error in updating postcode with id: {id} ")
-    #         return jsonify({'message': 'Failed to create postcode'}), 400
-        
-    #     current_app.logger.info(f"Found postcode: {updated_postcode}")
-    #     return updated_postcode
 
