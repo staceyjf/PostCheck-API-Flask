@@ -8,12 +8,9 @@ def repo_get_all_postcodes():
 
  # Use join load to populate the assosciated suburbs via the join table
 def repo_get_postcode_by_id(postcode_id):
-    found_postcode = PostCode.query.options(joinedload(PostCode.associatedSuburbs)).filter_by(id=postcode_id).first()
-    return found_postcode
+    return PostCode.query.options(joinedload(PostCode.associatedSuburbs)).filter_by(id=postcode_id).first()
     
 def repo_create_postcode_with_suburbs(data):
-    print(data)
-    
     # logic to add suburbs
     # bulk query fetching
     # TASK: Look at Transcation management to rollback if unsuccessful

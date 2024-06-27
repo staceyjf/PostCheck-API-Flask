@@ -60,6 +60,9 @@ class PostCodeById(MethodView):
         except NotFoundException as e:
             current_app.logger.error(f"Postcode with id: {id} not found when sent to the service with e: {e}")
             abort(404, message=f'Postcode with id: {id} not found')
+        except Exception as e:
+            current_app.logger.error(f"Error in updating postcode with id {id}: {e}")
+            abort(500, message="Failed to update a postcode")
             
     @bp.response(204)
     def delete(self,id):
