@@ -1,11 +1,10 @@
 from flask import request, jsonify, current_app
 from flask.views import MethodView
-from marshmallow import ValidationError
-from app.services.postcode_service import get_all_postcodes, create_postcode, get_postcode_by_id, delete_postcode_by_id, update_postcode_by_id
+from app.services.postcode_service import get_all_postcodes, create_postcode, get_postcode_by_id, delete_postcode_by_id, update_postcode_by_id, fetch_postcodes_by_suburb
 from flask_smorest import Blueprint, abort
 from app.schemas.postcode_schema import PostCodeSchema
-from app.schemas.postcode_schema_args import PostCodeSchemaArgs
-from app.exceptions.CustomErrors import NotFoundException, ValidationError
+from app.schemas.postcode_schema_args import PostCodeSchemaArgs, PostCodeSchemaBySuburbName
+from app.exceptions.CustomErrors import NotFoundException, CustomValidationError
 
 # blueprint adds to the factory function / making it reusable
 bp = Blueprint('postcode', __name__, url_prefix='/api/v1/postcodes', description="Operations on postcodes")
@@ -26,7 +25,6 @@ class Postcodes(MethodView):
     @bp.arguments(PostCodeSchemaArgs) # Parse and validates the request body
     @bp.response(201, PostCodeSchema())  # Flask-Smorest with Marshmallow takes care of serialize/deserializing
     def post(self, data):
-        # handle any errors raised in the service level
         """Create a new postcode
         
         Creates a new postcode with the provided data.
@@ -35,7 +33,7 @@ class Postcodes(MethodView):
             new_postcode = create_postcode(data)
             current_app.logger.info(f"Created postcode: {new_postcode}")
             return new_postcode
-        except ValidationError as e:
+        except CustomValidationError as e:
             current_app.logger.error(f"Validation error: {e}")
             abort(400, message=f'Validation error: {e}')
         except NotFoundException as e:
@@ -43,8 +41,31 @@ class Postcodes(MethodView):
             abort(404, message=f'Issue with a Suburb Id')     
         except Exception as e:
             current_app.logger.error(f"Error in creating a new postcode: {e}")
-            abort(500, message="Failed to create postcode") 
-
+            abort(500, message="Failed to create postcode")
+            
+@bp.route('/query')
+class PostcodesQueries(MethodView):            
+    @bp.arguments(PostCodeSchemaBySuburbName, location="query") 
+    @bp.response(200, PostCodeSchema(many=True)) 
+    def get(self, args):
+        """Query a postcode by suburb name
+        
+        Returns a list of postcodes associated with the suburb name"
+        """
+        try:
+            all_related_postcodes = fetch_postcodes_by_suburb(args)
+            current_app.logger.info(f"Created postcode: {all_related_postcodes}")
+            return all_related_postcodes
+        except CustomValidationError as e:
+            current_app.logger.error(f"Validation error: {e}")
+            abort(400, message=f'Validation error: {e}')
+        except NotFoundException as e:
+            current_app.logger.error(f"Resource not found: {e}")
+            abort(404, message=f'Resource not found')     
+        except Exception as e:
+            current_app.logger.error(f"Error occurred when querying postcodes by suburb: {e}")
+            abort(500, message="Failed to query postcodes by suburb")
+        
 @bp.route('/<int:id>')
 class PostCodeById(MethodView):
     @bp.response(200, PostCodeSchema())

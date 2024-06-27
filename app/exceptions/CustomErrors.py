@@ -1,6 +1,6 @@
 class NotFoundException(Exception):
     pass
 
-class ValidationError(Exception):
+class CustomValidationError(Exception):
     pass
 
