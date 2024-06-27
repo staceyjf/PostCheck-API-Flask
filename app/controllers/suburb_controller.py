@@ -4,6 +4,7 @@ from marshmallow import ValidationError
 from app.services.suburb_Service import get_all_suburbs, get_suburb_by_id, create_suburb
 from flask_smorest import Blueprint, abort
 from app.schemas.suburb_schema import SuburbSchema
+from app.schemas.suburb_schema_args import SuburbSchemaArgs
 
 # blueprint adds to the factory function / making it reusable
 bp = Blueprint('suburb', __name__, url_prefix='/api/v1/suburbs/', description="Operations on suburbs")
@@ -20,7 +21,7 @@ class Suburbs(MethodView):
         current_app.logger.info(f"All suburbs successful sent with a count of {len(all_suburbs)} suburbs")
         return all_suburbs
     
-    @bp.arguments(SuburbSchema) # Parse and validates the request body
+    @bp.arguments(SuburbSchemaArgs) # Parse and validates the request body
     @bp.response(201, SuburbSchema())  # Flask-Smorest with Marshmallow takes care of serialize/deserializing
     def post(self, data):
         """Create a new suburb

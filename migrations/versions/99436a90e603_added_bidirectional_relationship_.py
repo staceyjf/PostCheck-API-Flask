@@ -1,8 +1,8 @@
-"""fresh first migrate
+"""Added bidirectional relationship between PostCode and Suburb
 
-Revision ID: 6077d880adee
+Revision ID: 99436a90e603
 Revises: 
-Create Date: 2024-06-27 13:46:29.373949
+Create Date: 2024-06-27 16:59:18.926583
 
 """
 from alembic import op
@@ -10,7 +10,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision = '6077d880adee'
+revision = '99436a90e603'
 down_revision = None
 branch_labels = None
 depends_on = None

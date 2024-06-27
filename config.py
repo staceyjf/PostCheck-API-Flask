@@ -16,8 +16,6 @@ class Config:
     JSONIFY_PRETTYPRINT_REGULAR = True
     API_TITLE = "PostCheck - your powerful postcode & suburb checker"
     API_VERSION = "v1"
-    # OPENAPI_URL_PREFIX = "/api"
-    # OPENAPI_SWAGGER_UI_PATH = "/docs"
     OPENAPI_VERSION = "3.0.2"
     OPENAPI_JSON_PATH = "api-spec.json"
     OPENAPI_URL_PREFIX = "/"

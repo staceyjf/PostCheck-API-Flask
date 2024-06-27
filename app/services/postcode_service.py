@@ -1,6 +1,5 @@
 from flask import current_app
-from app.repositories.postcode_repository import repo_get_all_postcodes, repo_get_postcode_by_id, repo_create_postcode_with_suburbs
-from app.services.suburb_Service import get_suburb_by_id
+from app.repositories.postcode_repository import repo_get_all_postcodes, repo_get_postcode_by_id, repo_create_postcode_with_suburbs, repo_delete_by_id
 
 def get_all_postcodes():
     return repo_get_all_postcodes()
@@ -35,9 +34,19 @@ def create_postcode(data):
         raise ValueError(f"Field needs to be unique")
 
 def get_postcode_by_id(id):
-    found_postcode = repo_get_postcode_by_id(id)
-    if found_postcode:
+    try:
+        found_postcode = repo_get_postcode_by_id(id)
         current_app.logger.info(f"Get_postcode_by_id is sending back {found_postcode}")
         return found_postcode
-    else:
-        raise ValueError(f"Postcode with id:{id} not found")
+    except ValueError as e:
+        error_message = f"Postcode with id:{id} not found"
+        current_app.logger.error(f"{error_message}: {e}")
+        raise ValueError(error_message)
+    
+def delete_postcode_by_id(id):
+    try:
+        repo_delete_by_id(id)
+    except ValueError as e:
+        error_message = f"Postcode with id:{id} not found when trying to delete"
+        current_app.logger.error(f"{error_message}: {e}")
+        raise ValueError(error_message)
