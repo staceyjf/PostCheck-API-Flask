@@ -1,9 +1,6 @@
 from app.extensions import db
 from app.models.models import PostCode, Suburb
 from sqlalchemy.orm import joinedload
-from sqlalchemy.sql.operators import ilike_op,like_op
-
-
 
 def repo_get_all_postcodes():
     return PostCode.query.options(joinedload(PostCode.associatedSuburbs)).all()
@@ -48,9 +45,15 @@ def repo_update_by_id(updated_data,postcode_id):
     return updated_postcode
 
 def query_postcode_by_suburbName(data):
-    regex = f"%{data['suburb']}%"
+    search_pattern = f"%{data['suburb']}%"
     
-    print(regex)
+    found_postcode = db.session.query(PostCode).join(PostCode.associatedSuburbs).filter(Suburb.name.ilike(search_pattern)).options(joinedload(PostCode.associatedSuburbs)).all()
+    return found_postcode 
 
-    found_postcode = db.session.query(PostCode).join(PostCode.associatedSuburbs).filter(Suburb.name.ilike(regex)).options(joinedload(PostCode.associatedSuburbs)).all()
+def query_postcode_name(data):
+    search_pattern = f"%{data['postcode']}%"
+    
+    print(search_pattern)
+
+    found_postcode = db.session.query(PostCode).filter(PostCode.postcode.ilike(search_pattern)).options(joinedload(PostCode.associatedSuburbs)).all()
     return found_postcode 

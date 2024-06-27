@@ -1,6 +1,6 @@
 from flask import request, jsonify, current_app
 from flask.views import MethodView
-from app.services.postcode_service import get_all_postcodes, create_postcode, get_postcode_by_id, delete_postcode_by_id, update_postcode_by_id, fetch_postcodes_by_suburb
+from app.services.postcode_service import get_all_postcodes, create_postcode, get_postcode_by_id, delete_postcode_by_id, update_postcode_by_id, fetch_postcodes_by_suburb, fetch_relatedSuburbs_by_postcode
 from flask_smorest import Blueprint, abort
 from app.schemas.postcode_schema import PostCodeSchema
 from app.schemas.postcode_schema_args import PostCodeSchemaArgs, PostCodeSchemaBySuburbName
@@ -48,12 +48,18 @@ class PostcodesQueries(MethodView):
     @bp.arguments(PostCodeSchemaBySuburbName, location="query") 
     @bp.response(200, PostCodeSchema(many=True)) 
     def get(self, args):
-        """Query a postcode by suburb name
+        """Query a postcode by suburb name or postcode value
         
-        Returns a list of postcodes associated with the suburb name"
+        Returns a list of postcodes associated with the suburb name or postcode value
         """
         try:
-            all_related_postcodes = fetch_postcodes_by_suburb(args)
+            if 'suburb' in args:
+                all_related_postcodes = fetch_postcodes_by_suburb(args)
+            elif 'postcode' in args:
+                all_related_postcodes = fetch_relatedSuburbs_by_postcode(args)
+            else:
+                all_related_postcodes = []
+                
             current_app.logger.info(f"Created postcode: {all_related_postcodes}")
             return all_related_postcodes
         except CustomValidationError as e:
