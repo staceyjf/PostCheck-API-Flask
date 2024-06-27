@@ -18,8 +18,8 @@ class Config:
     API_VERSION = "v1"
     OPENAPI_VERSION = "3.0.2"
     OPENAPI_JSON_PATH = "api-spec.json"
-    OPENAPI_URL_PREFIX = "/"
-    OPENAPI_SWAGGER_UI_PATH = "/swagger-ui"
+    OPENAPI_URL_PREFIX = "/api/v1"
+    OPENAPI_SWAGGER_UI_PATH = "/docs"
     OPENAPI_SWAGGER_UI_URL = "https://cdn.jsdelivr.net/npm/swagger-ui-dist/"
     
     #TASK: Review logger config and add here

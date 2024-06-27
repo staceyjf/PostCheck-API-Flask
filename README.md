@@ -17,3 +17,12 @@ This API will work hand in hand with the Typescript React app (available [here](
 4. Tests can be run via `src/test/java/com/auspost/postcode`.
 
 _Note: The above steps assume that you already have `pipenv` installed. If you prefer, you can replace pipenv with your tool of choice for managing virtual environments.e_
+
+## Documentation
+
+Documentation avaiable at /api/v1/docs
+
+<div align="center">
+  <img src="./planning /Swagger_doc.png" alt="Swagger documentation of PostCheck API">
+</div>
+
