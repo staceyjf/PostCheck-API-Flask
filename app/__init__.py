@@ -5,6 +5,7 @@ from app.controllers.suburb_controller import bp as suburb_bp
 from app.extensions import db, api, cors,migrate
 import app.models
 from logging.config import dictConfig
+from flask_smorest import Api
 
 def create_app():
     # configure builtin Logging using Flask example
@@ -30,16 +31,16 @@ def create_app():
     app.config.from_object(Config)
     db.init_app(app)
     migrate.init_app(app, db)
-    api.init_app(app)
     cors.init_app(app)
     
     @app.route('/')
     def hello_world():
         return 'Hello, World!'
     
-    app.register_blueprint(postcode_bp)
-    app.register_blueprint(suburb_bp)
+    # api.init_app(app)
+    api = Api(app)
     
-    app.debug = True
-
+    api.register_blueprint(postcode_bp)
+    api.register_blueprint(suburb_bp)
+    
     return app
