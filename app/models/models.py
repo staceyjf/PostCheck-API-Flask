@@ -13,7 +13,7 @@ postcode_suburb_association = Table('postcode_suburb', db.metadata,
 class PostCode(db.Model):
     __tablename__ = 'postcodes'
     id = db.Column(db.Integer, primary_key=True)
-    postcode = db.Column(db.String(4), nullable=False)
+    postcode = db.Column(db.String(4), nullable=False, unique=True)
     # Define the M:M relationship via the join table, Postcode owns the relationship (not a bi-direction so only need to update one way)
     associatedSuburbs = relationship("Suburb", secondary=postcode_suburb_association)
     
@@ -34,7 +34,7 @@ class State(Enum):
 class Suburb(db.Model):
     __tablename__ = 'suburbs'
     id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(100), nullable=False)
+    name = db.Column(db.String(100), nullable=False, unique=True)
     state = Column(SQLEnum(State), nullable=False)
     
     def __str__(self):

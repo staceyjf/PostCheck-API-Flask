@@ -1,8 +1,8 @@
-"""Initial migration.
+"""fresh first migrate
 
-Revision ID: 1aed80fce78d
+Revision ID: 6077d880adee
 Revises: 
-Create Date: 2024-06-26 09:52:45.723922
+Create Date: 2024-06-27 13:46:29.373949
 
 """
 from alembic import op
@@ -10,7 +10,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision = '1aed80fce78d'
+revision = '6077d880adee'
 down_revision = None
 branch_labels = None
 depends_on = None
@@ -21,13 +21,15 @@ def upgrade():
     op.create_table('postcodes',
     sa.Column('id', sa.Integer(), nullable=False),
     sa.Column('postcode', sa.String(length=4), nullable=False),
-    sa.PrimaryKeyConstraint('id', name=op.f('pk_postcodes'))
+    sa.PrimaryKeyConstraint('id', name=op.f('pk_postcodes')),
+    sa.UniqueConstraint('postcode', name=op.f('uq_postcodes_postcode'))
     )
     op.create_table('suburbs',
     sa.Column('id', sa.Integer(), nullable=False),
     sa.Column('name', sa.String(length=100), nullable=False),
     sa.Column('state', sa.Enum('NEW_SOUTH_WALES', 'VICTORIA', 'QUEENSLAND', 'SOUTH_AUSTRALIA', 'WESTERN_AUSTRALIA', 'TASMANIA', 'NORTHERN_TERRITORY', 'AUSTRALIAN_CAPITAL_TERRITORY', name='state'), nullable=False),
-    sa.PrimaryKeyConstraint('id', name=op.f('pk_suburbs'))
+    sa.PrimaryKeyConstraint('id', name=op.f('pk_suburbs')),
+    sa.UniqueConstraint('name', name=op.f('uq_suburbs_name'))
     )
     op.create_table('postcode_suburb',
     sa.Column('postcode_id', sa.Integer(), nullable=True),

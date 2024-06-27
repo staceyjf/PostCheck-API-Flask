@@ -1,6 +1,7 @@
 from app.extensions import db
 from app.models.models import PostCode, Suburb
 from sqlalchemy.orm import joinedload
+from sqlalchemy.exc import IntegrityError
 
 
 def repo_get_all_postcodes():
@@ -16,7 +17,7 @@ def repo_create_postcode_with_suburbs(data):
     
     # logic to add suburbs
     new_associatedSuburbs = []
-    for suburb_id in data['suburbIds']:
+    for suburb_id in data.get('suburbIds', []):
         suburb = Suburb.query.get(suburb_id)  # querying each suburb by id 
         if suburb:
             new_associatedSuburbs.append(suburb)
@@ -24,7 +25,10 @@ def repo_create_postcode_with_suburbs(data):
             raise Exception(f"Suburb with id:{suburb_id} not found")
     
     new_postcode = PostCode(postcode=data['postcode'], associatedSuburbs=new_associatedSuburbs)
-    # new_postcode = PostCode(postcode=data['postcode'], associatedSuburbs=['associatedSuburbs'])
-    db.session.add(new_postcode)
-    db.session.commit()
-    return new_postcode
+    
+    try:
+        db.session.add(new_postcode)
+        db.session.commit()
+        return new_postcode
+    except IntegrityError as e:
+        raise ValueError(f"Integrity Error:. {e}")

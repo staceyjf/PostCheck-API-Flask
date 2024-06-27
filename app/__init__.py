@@ -1,7 +1,7 @@
 from config import Config
 from flask import Flask, jsonify
-from app.controllers.postcode_controller import bp as postcode_controller
-from app.controllers.suburb_controller import bp as suburb_controller
+from app.controllers.postcode_controller import bp as postcode_bp
+from app.controllers.suburb_controller import bp as suburb_bp
 from app.extensions import db, api, cors,migrate
 import app.models
 from logging.config import dictConfig
@@ -37,7 +37,9 @@ def create_app():
     def hello_world():
         return 'Hello, World!'
     
-    app.register_blueprint(postcode_controller)
-    app.register_blueprint(suburb_controller)
+    app.register_blueprint(postcode_bp)
+    app.register_blueprint(suburb_bp)
+    
+    app.debug = True
 
     return app

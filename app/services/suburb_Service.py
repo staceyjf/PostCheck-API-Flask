@@ -5,11 +5,6 @@ from app.models.models import State
 def get_all_suburbs():
     return repo_get_all_suburbs()
 
-def get_suburb_by_id(id):
-    maybe_suburb = repo_get_suburb_by_id(id)
-    current_app.logger.info(f"get_suburb_by_id is sending back {maybe_suburb}")
-    return maybe_suburb
-
 def create_suburb(data):
     # check fields aren't blank
     if not data.get('name'):
@@ -36,8 +31,19 @@ def create_suburb(data):
     
     # Update to ENUM
     cleaned_data['state'] = state_enum
-        
-    created_suburb = repo_create_suburb(cleaned_data)
-    current_app.logger.info(f"create_suburb is sending back {created_suburb}")
+    
+    try:
+        created_suburb = repo_create_suburb(cleaned_data)
+        current_app.logger.info(f"create_suburb is sending back {created_suburb}")
+        return created_suburb
+    except ValueError as e:
+        current_app.logger.error(f"Error when creating the suburb in the db: {e}")
+        raise ValueError(f"Field needs to be unique")
 
-    return created_suburb
+def get_suburb_by_id(id):
+    found_suburb = repo_get_suburb_by_id(id)
+    if  found_suburb:
+        current_app.logger.info(f"get_suburb_by_id is sending back {found_suburb}")
+        return found_suburb
+    else:
+        raise ValueError(f"Suburb with id:{id} not found")
