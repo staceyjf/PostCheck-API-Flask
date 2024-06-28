@@ -19,7 +19,7 @@ class Postcodes(MethodView):
         Retrieves a list of all postcodes from the database.
         """
         all_postcodes = get_all_postcodes()
-        current_app.logger.info(f"All postcodes successful sent with a count of {len(all_postcodes)} postcodes")
+        current_app.logger.info(f"All postcodes successfully sent with a count of {len(all_postcodes)} postcodes")
         return all_postcodes
     
     @bp.arguments(PostCodeSchemaArgs) # Parse and validates the request body

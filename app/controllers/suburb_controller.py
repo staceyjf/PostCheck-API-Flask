@@ -18,7 +18,7 @@ class Suburbs(MethodView):
         Retrieves a list of all suburbs from the database.
         """
         all_suburbs = get_all_suburbs()
-        current_app.logger.info(f"All suburbs successful sent with a count of {len(all_suburbs)} suburbs")
+        current_app.logger.info(f"All suburbs successfully sent with a count of {len(all_suburbs)} suburbs")
         return all_suburbs
     
     @bp.arguments(SuburbSchemaArgs) # Parse and validates the request body
