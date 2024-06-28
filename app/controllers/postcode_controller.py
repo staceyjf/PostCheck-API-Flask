@@ -14,9 +14,13 @@ bp = Blueprint('postcode', __name__, url_prefix='/api/v1/postcodes', description
 class Postcodes(MethodView):
     @bp.response(200, PostCodeSchema(many=True))  # smorest add for openApi docs
     def get(self):
-        """Fetch all postcodes
+        """
+        Fetch all postcodes
 
         Retrieves a list of all postcodes from the database.
+        
+        #### Responses
+        200: Success - Returns a list of all postcodes.
         """
         all_postcodes = get_all_postcodes()
         current_app.logger.info(f"All postcodes successfully sent with a count of {len(all_postcodes)} postcodes")
@@ -25,9 +29,21 @@ class Postcodes(MethodView):
     @bp.arguments(PostCodeSchemaArgs) # Parse and validates the request body
     @bp.response(201, PostCodeSchema())  # Flask-Smorest with Marshmallow takes care of serialize/deserializing
     def post(self, data):
-        """Create a new postcode
-        
+        """
+        Create a new postcode
+
         Creates a new postcode with the provided data.
+
+        #### Request Body
+        - `suburb_id`: Integer, required - The ID of the suburb associated with the postcode.
+        - `postcode`: String, required - The postcode value.
+
+        #### Responses
+        201: Success - Returns the newly created postcode.
+        400: Bad Request - If validation of the request body fails.
+        401: Unauthorized - If the authentication token is missing or invalid.
+        404: Not Found - If the specified suburb ID does not exist.
+        500: Internal Server Error - If an unexpected error occurs during postcode creation.
         """
         try:
             new_postcode = create_postcode(data)
@@ -48,9 +64,21 @@ class PostcodesQueries(MethodView):
     @bp.arguments(PostCodeSchemaBySuburbName, location="query") 
     @bp.response(200, PostCodeSchema(many=True)) 
     def get(self, args):
-        """Query a postcode by suburb name or postcode value
-        
-        Returns a list of postcodes associated with the suburb name or postcode value
+        """
+        Query a postcode by suburb name or postcode value
+
+        Returns a list of postcodes associated with the suburb name or postcode value.
+
+        #### Query Parameters
+        - `suburb`: String, optional - The name of the suburb to query postcodes for.
+        - `postcode`: String, optional - The postcode value to query suburbs for.
+
+        #### Responses
+        200: Success - Returns a list of postcodes or suburbs matching the query.
+        400: Bad Request - If validation of the query parameters fails.
+        401: Unauthorized - If the authentication token is missing or invalid.
+        404: Not Found - If the specified ID does not exist.
+        500: Internal Server Error - If an unexpected error occurs during the query.
         """
         try:
             if 'suburb' in args:
@@ -76,9 +104,18 @@ class PostcodesQueries(MethodView):
 class PostCodeById(MethodView):
     @bp.response(200, PostCodeSchema())
     def get(self,id):
-        """Get a postcode by Id
-            
-        Retrieves a postcode by its id from the database.
+        """
+        Get a postcode by ID
+
+        Retrieves a postcode by its ID from the database.
+
+        #### Path Parameters
+        - `id`: Integer, required - The ID of the postcode to retrieve.
+
+        #### Responses
+        200: Success - Returns the postcode with the specified ID.
+        404: Not Found - If a postcode with the specified ID does not exist.
+        500: Internal Server Error - If an unexpected error occurs during retrieval.
         """
         try: 
             found_postcode = get_postcode_by_id(id)  
@@ -93,23 +130,50 @@ class PostCodeById(MethodView):
             
     @bp.response(204)
     def delete(self,id):
-        """DELETE a postcode by Id
-                
-        Deletes a postcode by Id.
+        """
+        DELETE a postcode by ID
+
+        Deletes a postcode by its ID.
+
+        #### Path Parameters
+        - `id`: Integer, required - The ID of the postcode to delete.
+
+        #### Responses
+        204: No Content - Successfully deleted the postcode.
+        401: Unauthorized - If the authentication token is missing or invalid.
+        404: Not Found - If a postcode with the specified ID does not exist.
+        500: Internal Server Error - If an unexpected error occurs during deletion.
         """
         try: 
             delete_postcode_by_id(id)  
             current_app.logger.info(f"Postcode with {id} has been delete.")
         except NotFoundException as e:
             current_app.logger.error(f"Error: {e}")
-            abort(404, message=f'Postcode with id: {id} not found when trying to delete')    
+            abort(404, message=f'Postcode with id: {id} not found when trying to delete')
+        except Exception as e:
+            current_app.logger.error(f"Error in deleting postcode with id {id}: {e}")
+            abort(500, message="Failed to delete a postcode")    
 
     @bp.arguments(PostCodeSchemaArgs) 
     @bp.response(200, PostCodeSchema())
     def patch(self, data, id):
-        """Update a postcode by Id
-                
-        Updates a postcode by Id.
+        """
+        Update a postcode by ID
+
+        Updates a postcode by its ID with the provided data.
+
+        #### Request Body
+        - `suburb_id`: Integer, optional - The new ID of the suburb associated with the postcode.
+        - `postcode`: String, optional - The new postcode value.
+
+        #### Path Parameters
+        - `id`: Integer, required - The ID of the postcode to update.
+
+        #### Responses
+        200: Success - Returns the updated postcode.
+        401: Unauthorized - If the authentication token is missing or invalid.
+        404: Not Found - If a postcode with the specified ID does not exist.
+        500: Internal Server Error - If an unexpected error occurs during update.
         """
         try:
             updated_postcode = update_postcode_by_id(data, id)
@@ -118,6 +182,9 @@ class PostCodeById(MethodView):
         except NotFoundException as e:
             current_app.logger.error(f"Error: {e}")
             abort(404, message=f'Postcode with id: {id} not found when trying to update')
+        except Exception as e:
+            current_app.logger.error(f"Error in updating postcode with id {id}: {e}")
+            abort(500, message="Failed to update a postcode")
         
         
         

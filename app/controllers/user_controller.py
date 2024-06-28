@@ -16,12 +16,16 @@ class Users(MethodView):
     @bp.response(200, UserSchema(many=True))  
     def get(self,  current_user):
         """
-        Fetch all users
+        Fetch all users (Protected)
 
         Retrieves a list of all registered users from the database. This route is protected and requires a valid authentication token.
+
+        #### Responses:
+        200: Success - Returns a list of all users.
+        401: Unauthorized - If the authentication token is missing or invalid.
         """
         all_users = get_all_users()
-        current_app.logger.info(f"All users successfully sent with a count of {len(all_users)} postcodes")
+        current_app.logger.info(f"All users successfully sent with a count of {len(all_users)} postcodes as requested by {current_user}")
         return all_users
     
 @bp.route('/login')
@@ -33,7 +37,15 @@ class Users(MethodView):
         User login
 
         Authenticates a user based on provided credentials and returns an authentication token for accessing protected routes. This route does not require a token.
-        """ 
+
+        Request body:
+        - username: String
+        - password: String
+
+        #### Responses:
+        201: Success - Returns an authentication token.
+        401: Unauthorized - If authentication fails due to invalid credentials.
+        """
         try:
             user = authenticate_user(data)
             current_app.logger.info("User successfully authenticated")
@@ -52,7 +64,17 @@ class Users(MethodView):
         """
         User sign up
 
-        . This route does not require a token.
+        Registers a new user with the provided credentials. This route does not require a token.
+
+        #### Request body:
+        - username: String
+        - password: String
+        - email: String (optional)
+
+        #### Responses:
+        201: Success - Returns the newly created user.
+        400: Bad Request - If validation of the request body fails.
+        500: Internal Server Error - If an unexpected error occurs during user creation.
         """ 
         try:
             user = signup_user(data)
