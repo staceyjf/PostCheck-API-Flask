@@ -7,3 +7,4 @@ class UserSchemaArgs(Schema):
         
     username = fields.Str()
     email = fields.Str()
+    password = fields.Str()

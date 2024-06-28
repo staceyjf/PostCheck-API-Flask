@@ -45,7 +45,6 @@ def get_postcode_by_id(id):
     except NoResultFound:
         raise NotFoundException(f"Postcode with id: {id} not found")
 
-    
 def delete_postcode_by_id(id):
     try:
         repo_delete_by_id(id)

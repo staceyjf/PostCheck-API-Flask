@@ -5,7 +5,7 @@ from app.exceptions.CustomErrors import NotFoundException, CustomValidationError
 from app.schemas.user_schema import UserSchema
 from app.schemas.user_schema_args import UserSchemaArgs
 from app.schemas.token_schema import TokenSchema
-from app.services.user_service import get_all_users, authenticate_user, generate_token
+from app.services.user_service import get_all_users, authenticate_user, generate_token, signup_user
 from app.auth.token_required_decorator import token_required
 
 bp = Blueprint('user', __name__, url_prefix='/api/v1/auth', description="Operations for Authentication")
@@ -41,5 +41,26 @@ class Users(MethodView):
             current_app.logger.info("Token successfully provided")
             return token
         except CustomValidationError as e:  
-            current_app.logger.error(f"Authentication failed: {str(e)}")
+            current_app.logger.error(f"Authentication failed: {e}")
             abort(401, message=f"Authentication failed: {e}")
+            
+@bp.route('/signup')
+class Users(MethodView):
+    @bp.arguments(UserSchemaArgs)
+    @bp.response(201)  
+    def post(self, data):
+        """
+        User sign up
+
+        . This route does not require a token.
+        """ 
+        try:
+            user = signup_user(data)
+            current_app.logger.info("User was successfully signed up")
+            return user
+        except CustomValidationError as e:
+            current_app.logger.error(f"Validation error: {e}")
+            abort(400, message=f'Validation error: {e}')
+        except Exception as e:
+            current_app.logger.error(f"Error in creating a new user: {e}")
+            abort(500, message="Failed to create user")
