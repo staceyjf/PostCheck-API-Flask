@@ -26,3 +26,7 @@ Documentation avaiable at /api/v1/docs
   <img src="./planning /Swagger_doc.png" alt="Swagger documentation of PostCheck API">
 </div>
 
+## Choice
+1. Class-based views
+2. CSR & Domain driven 
+3. why HMAC alorithm for digital signiture (Header.Payload.Signture): speed and simplicity 

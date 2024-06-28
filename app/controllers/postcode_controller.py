@@ -1,4 +1,4 @@
-from flask import request, jsonify, current_app
+from flask import current_app
 from flask.views import MethodView
 from app.services.postcode_service import get_all_postcodes, create_postcode, get_postcode_by_id, delete_postcode_by_id, update_postcode_by_id, fetch_postcodes_by_suburb, fetch_relatedSuburbs_by_postcode
 from flask_smorest import Blueprint, abort
@@ -9,7 +9,7 @@ from app.exceptions.CustomErrors import NotFoundException, CustomValidationError
 # blueprint adds to the factory function / making it reusable
 bp = Blueprint('postcode', __name__, url_prefix='/api/v1/postcodes', description="Operations on postcodes")
 
-# utilising fuctional-based approach so not using Methodview
+# using a class based approach as recommended by smorest to utilise swagger 
 @bp.route('/')
 class Postcodes(MethodView):
     @bp.response(200, PostCodeSchema(many=True))  # smorest add for openApi docs

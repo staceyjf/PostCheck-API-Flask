@@ -3,7 +3,7 @@ from app.models.models import PostCode, Suburb
 from sqlalchemy.orm import joinedload
 
 def repo_get_all_postcodes():
-    return PostCode.query.options(joinedload(PostCode.associatedSuburbs)).all()
+    return PostCode.query.options(joinedload(PostCode.associatedSuburbs)).order_by(PostCode.postcode).all()
 
  # Use join load to populate the assosciated suburbs via the join table
 def repo_get_postcode_by_id(postcode_id):
@@ -53,7 +53,5 @@ def query_postcode_by_suburbName(data):
 def query_postcode_name(data):
     search_pattern = f"%{data['postcode']}%"
     
-    print(search_pattern)
-
     found_postcode = db.session.query(PostCode).filter(PostCode.postcode.ilike(search_pattern)).options(joinedload(PostCode.associatedSuburbs)).all()
     return found_postcode 

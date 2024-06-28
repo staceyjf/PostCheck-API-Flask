@@ -1,6 +1,6 @@
 from flask import current_app
 from flask.views import MethodView
-from app.services.suburb_Service import get_all_suburbs, get_suburb_by_id, create_suburb,update_suburb_by_id, delete_suburb_by_id
+from app.services.suburb_service import get_all_suburbs, get_suburb_by_id, create_suburb,update_suburb_by_id, delete_suburb_by_id
 from flask_smorest import Blueprint, abort
 from app.schemas.suburb_schema import SuburbSchema
 from app.schemas.suburb_schema_args import SuburbSchemaArgs
