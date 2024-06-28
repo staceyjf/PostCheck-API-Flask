@@ -2,7 +2,7 @@ from marshmallow import Schema, fields
 
 class UserSchema(Schema):
     class Meta: # To maintain the order as they are defined when being serialized or deserialized
-        fields = ("id", "public_id", "username", "email")
+        fields = ("id", "username", "email")
         ordered = False
         
     id = fields.Int(dump_only=True) 

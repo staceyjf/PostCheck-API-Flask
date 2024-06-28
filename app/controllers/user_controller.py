@@ -12,9 +12,9 @@ bp = Blueprint('user', __name__, url_prefix='/api/v1/auth', description="Operati
 
 @bp.route('/user')
 class Users(MethodView):
-    # @token_required 
+    @token_required 
     @bp.response(200, UserSchema(many=True))  
-    def get(self):
+    def get(self,  current_user):
         """
         Fetch all users
 
@@ -47,7 +47,7 @@ class Users(MethodView):
 @bp.route('/signup')
 class Users(MethodView):
     @bp.arguments(UserSchemaArgs)
-    @bp.response(201)  
+    @bp.response(201, UserSchema())  
     def post(self, data):
         """
         User sign up

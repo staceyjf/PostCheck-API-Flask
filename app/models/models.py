@@ -46,5 +46,5 @@ class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     public_id = db.Column(db.String(50), unique = True) # avoid using sensitive info as JWT are not encrypted 
     username = db.Column(db.String(100), nullable=False, unique=True)
-    password = db.Column(db.String(100), nullable=False)
+    password = db.Column(db.String(250), nullable=False)
     email = db.Column(db.String(70), unique = True)

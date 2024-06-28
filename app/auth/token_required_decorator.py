@@ -10,18 +10,19 @@ def token_required(f):
     @wraps(f)
     def decorated(*args, **kwargs):
         token = None
-        if 'x-access-token' in request.headers:
-            token = request.headers['x-access-token']
+        if 'Authorization' in request.headers and request.headers['Authorization'].startswith('Bearer '):
+            token = request.headers['Authorization'].split(" ")[1]
         if not token:
             return abort(401, message="Token is missing.")
         
+        # decoding to fetch the payload
         try:
-            # decoding to fetch the payload
-            data = jwt.decode(token, Config.SECRET_KEY)
-            # find the user by public_id
-            current_user = User.query.filter_by(public_id = data['public_id']).first()
-        except:
+            data = jwt.decode(token, Config.SECRET_KEY, algorithms="HS256")
+            current_user = User.query.filter_by(public_id = data['public_id']).first() # find the user by public_id
+        except jwt.ExpiredSignatureError or jwt.InvalidTokenError:
             return abort(401, message="Token is invalid.")
+        except:
+            return abort(401, message="There is an issue with the Token validation.")
         
         # returns the current logged in user context to the controller
         return f(current_user, *args, **kwargs)
