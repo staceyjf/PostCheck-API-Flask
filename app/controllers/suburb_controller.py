@@ -8,7 +8,7 @@ from app.exceptions.CustomErrors import NotFoundException
 from app.auth.token_required_decorator import token_required
 
 # blueprint adds to the factory function / making it reusable
-bp = Blueprint('suburb', __name__, url_prefix='/api/v1/suburbs/', description="Operations on suburbs")
+bp = Blueprint('suburb', __name__, url_prefix='/api/v1/suburbs', description="Operations on suburbs")
 
 @bp.route('/')
 class Suburbs(MethodView):
@@ -29,7 +29,7 @@ class Suburbs(MethodView):
     @token_required 
     @bp.arguments(SuburbSchemaArgs) # Parse and validates the request body
     @bp.response(201, SuburbSchema())  # Flask-Smorest with Marshmallow takes care of serialize/deserializing
-    def post(self, data, current_user):
+    def post(self, data):
         """
         Create a new suburb (Protected)
 
@@ -49,13 +49,13 @@ class Suburbs(MethodView):
         """
         try:
             new_suburb = create_suburb(data)
-            current_app.logger.info(f"Created suburb: {new_suburb} by user:{current_user}")
+            current_app.logger.info(f"Created suburb: {new_suburb}")
             return new_suburb
         except NotFoundException as e:
             current_app.logger.error(f"Issue with a Suburb Id: {e}")
             abort(404, message=f'Issue with a Suburb Id')
         except Exception as e:
-            current_app.logger.error(f"Error in creating a new suburb: {e}")
+            current_app.logger.error(f"Error in a new suburb: {e}")
             abort(500, message="Failed to create suburb")  
 
         
@@ -89,9 +89,9 @@ class SuburbsById(MethodView):
     
     @token_required        
     @bp.response(204)
-    def delete(self,id,current_user):
+    def delete(self,id):
         """
-        DELETE a suburb by Id (Protected)
+        Delete a suburb by Id (Protected)
 
         Deletes a suburb by Id. This endpoint is protected and requires Bearer Authentication.
 
@@ -106,7 +106,7 @@ class SuburbsById(MethodView):
         """
         try: 
             delete_suburb_by_id(id)  
-            current_app.logger.info(f"suburb with {id} has been delete by user:{current_user}")
+            current_app.logger.info(f"suburb with {id} has been deleted")
         except NotFoundException as e:
             current_app.logger.error(f"Error: {e}")
             abort(404, message=f'Suburb with id: {id} not found when trying to delete')
@@ -117,7 +117,7 @@ class SuburbsById(MethodView):
     @token_required 
     @bp.arguments(SuburbSchemaArgs) 
     @bp.response(200, SuburbSchema())
-    def patch(self, data, id, current_user):
+    def patch(self, data, id):
         """
         Update a suburb by Id (Protected)
 
@@ -139,7 +139,7 @@ class SuburbsById(MethodView):
         """
         try:
             updated_suburb = update_suburb_by_id(data, id)
-            current_app.logger.info(f"Updated suburb: {updated_suburb} by user:{current_user}")
+            current_app.logger.info(f"Updated suburb: {updated_suburb}")
             return updated_suburb
         except NotFoundException as e:
             current_app.logger.error(f"Error: {e}")

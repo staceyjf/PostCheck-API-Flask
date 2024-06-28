@@ -18,5 +18,5 @@ db = SQLAlchemy(metadata=metadata)
 
 # initialise other Flask extensions
 migrate = Migrate()
-api = Api()
-cors = CORS()
+# api = Api()
+# cors = CORS()

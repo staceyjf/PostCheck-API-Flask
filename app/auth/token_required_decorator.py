@@ -18,13 +18,13 @@ def token_required(f):
         # decoding to fetch the payload
         try:
             data = jwt.decode(token, Config.SECRET_KEY, algorithms="HS256")
-            current_user = User.query.filter_by(public_id = data['public_id']).first() # find the user by public_id
+            # current_user = User.query.filter_by(public_id = data['public_id']).first() # find the user by public_id
         except jwt.ExpiredSignatureError or jwt.InvalidTokenError:
             return abort(401, message="Token is invalid.")
         except:
             return abort(401, message="There is an issue with the Token validation.")
         
-        # returns the current logged in user context to the controller
-        return f(current_user, *args, **kwargs)
+        # removed the user to see if this is the issue
+        return f(*args, **kwargs)
     
     return decorated

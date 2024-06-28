@@ -1,11 +1,12 @@
 from config import Config
-from flask import Flask, jsonify
+from flask import Flask, request, Response
 from app.controllers.postcode_controller import bp as postcode_bp
 from app.controllers.suburb_controller import bp as suburb_bp
 from app.controllers.user_controller import bp as user_bp
-from app.extensions import db, api, cors,migrate
+from app.extensions import db, migrate
 from logging.config import dictConfig
 from flask_smorest import Api
+from flask_cors import CORS
 
 def create_app():
     # configure builtin Logging using Flask example
@@ -31,11 +32,13 @@ def create_app():
     app.config.from_object(Config)
     db.init_app(app)
     migrate.init_app(app, db)
-    cors.init_app(app)
     
     @app.route('/')
     def hello_world():
         return 'Hello, World!'
+    
+    # cors.init_app(app, resources={r"/api/*": {"origins": "http://localhost:5173"}})
+    CORS(app, resources={r"/api/*": {"origins": "*"}})
     
     # api.init_app(app) didn't seem to work
     api = Api(app)
@@ -43,5 +46,11 @@ def create_app():
     api.register_blueprint(postcode_bp)
     api.register_blueprint(suburb_bp)
     api.register_blueprint(user_bp)
+    
+    # hack to overcome the cors issue
+    @app.before_request
+    def basic_authentication():
+        if request.method.lower() == 'options':
+            return Response()
     
     return app

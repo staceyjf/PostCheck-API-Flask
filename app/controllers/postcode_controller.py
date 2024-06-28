@@ -5,6 +5,7 @@ from flask_smorest import Blueprint, abort
 from app.schemas.postcode_schema import PostCodeSchema
 from app.schemas.postcode_schema_args import PostCodeSchemaArgs, PostCodeSchemaBySuburbName
 from app.exceptions.CustomErrors import NotFoundException, CustomValidationError
+from app.auth.token_required_decorator import token_required
 
 # blueprint adds to the factory function / making it reusable
 bp = Blueprint('postcode', __name__, url_prefix='/api/v1/postcodes', description="Operations on postcodes")
@@ -26,6 +27,7 @@ class Postcodes(MethodView):
         current_app.logger.info(f"All postcodes successfully sent with a count of {len(all_postcodes)} postcodes")
         return all_postcodes
     
+    @token_required
     @bp.arguments(PostCodeSchemaArgs) # Parse and validates the request body
     @bp.response(201, PostCodeSchema())  # Flask-Smorest with Marshmallow takes care of serialize/deserializing
     def post(self, data):
@@ -127,11 +129,12 @@ class PostCodeById(MethodView):
         except Exception as e:
             current_app.logger.error(f"Error in updating postcode with id {id}: {e}")
             abort(500, message="Failed to update a postcode")
-            
+    
+    @token_required        
     @bp.response(204)
     def delete(self,id):
         """
-        DELETE a postcode by ID
+        Delete a postcode by ID
 
         Deletes a postcode by its ID.
 
@@ -146,7 +149,7 @@ class PostCodeById(MethodView):
         """
         try: 
             delete_postcode_by_id(id)  
-            current_app.logger.info(f"Postcode with {id} has been delete.")
+            current_app.logger.info(f"Postcode with {id} has been deleted")
         except NotFoundException as e:
             current_app.logger.error(f"Error: {e}")
             abort(404, message=f'Postcode with id: {id} not found when trying to delete')
@@ -154,6 +157,7 @@ class PostCodeById(MethodView):
             current_app.logger.error(f"Error in deleting postcode with id {id}: {e}")
             abort(500, message="Failed to delete a postcode")    
 
+    @token_required 
     @bp.arguments(PostCodeSchemaArgs) 
     @bp.response(200, PostCodeSchema())
     def patch(self, data, id):

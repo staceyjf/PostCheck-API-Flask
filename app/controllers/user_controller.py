@@ -14,7 +14,7 @@ bp = Blueprint('user', __name__, url_prefix='/api/v1/auth', description="Operati
 class Users(MethodView):
     @token_required 
     @bp.response(200, UserSchema(many=True))  
-    def get(self,  current_user):
+    def get(self):
         """
         Fetch all users (Protected)
 
@@ -25,10 +25,10 @@ class Users(MethodView):
         401: Unauthorized - If the authentication token is missing or invalid.
         """
         all_users = get_all_users()
-        current_app.logger.info(f"All users successfully sent with a count of {len(all_users)} postcodes as requested by {current_user}")
+        current_app.logger.info(f"All users successfully sent with a count of {len(all_users)} postcodes")
         return all_users
     
-@bp.route('/login')
+@bp.route('/signin')
 class Users(MethodView):
     @bp.arguments(UserSchemaArgs)
     @bp.response(201, TokenSchema())  

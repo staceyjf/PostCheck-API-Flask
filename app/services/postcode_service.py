@@ -52,10 +52,14 @@ def delete_postcode_by_id(id):
         raise NotFoundException(f"Postcode with id: {id} not found")
 
 def update_postcode_by_id(updated_data, id):
+    print(updated_data)
     # basic data cleaning
     cleaned_data = {}
-    if 'name' in updated_data: 
-        cleaned_data['name'] = updated_data['name'].strip()
+    if 'postcode' in updated_data: 
+        cleaned_data['postcode'] = updated_data['postcode'].strip()
+        
+    if 'suburbIds' in updated_data: 
+        cleaned_data['suburbIds'] = updated_data['suburbIds']
             
     try:
         updated_postcode = repo_update_by_id(cleaned_data,id)

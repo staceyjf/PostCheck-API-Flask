@@ -34,13 +34,15 @@ def repo_update_by_id(updated_data,postcode_id):
     if 'postcode' in updated_data:
         updated_postcode.postcode = updated_data['postcode']
     
+    print(updated_data)    
+    
     if 'suburbIds' in updated_data:
         # logic to update suburbs
         updated_postcode.associatedSuburbs.clear() #clear the associations 
         suburb_ids = updated_data.get('suburbIds', [])
         suburbs = Suburb.query.filter(Suburb.id.in_(suburb_ids)).all()
         updated_postcode.associatedSuburbs = suburbs
-
+    
     db.session.commit()
     return updated_postcode
 
