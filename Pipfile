@@ -11,6 +11,7 @@ flask-smorest = "*"
 python-dotenv = "*"
 pymysql = "*"
 pyjwt = "*"
+flake8 = "*"
 
 [dev-packages]
 

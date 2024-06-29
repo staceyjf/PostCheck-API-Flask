@@ -1,30 +1,32 @@
-import jwt # imports for PyJWT authentication
+import jwt  # imports for PyJWT authentication
 from flask import request
 from flask_smorest import abort
 from config import Config
-from app.models.models import User
+# from app.models.models import User  # Commented out since it's not used
 from functools import wraps
 
-# decorator for varifying the JWT
+
+# Decorator for verifying the JWT
 def token_required(f):
     @wraps(f)
     def decorated(*args, **kwargs):
         token = None
-        if 'Authorization' in request.headers and request.headers['Authorization'].startswith('Bearer '):
-            token = request.headers['Authorization'].split(" ")[1]
+        auth_header = request.headers.get('Authorization', '')
+        if auth_header.startswith('Bearer '):
+            token = auth_header.split(" ")[1]
         if not token:
             return abort(401, message="Token is missing.")
-        
-        # decoding to fetch the payload
+        # Decoding to fetch the payload
         try:
-            data = jwt.decode(token, Config.SECRET_KEY, algorithms="HS256")
-            # current_user = User.query.filter_by(public_id = data['public_id']).first() # find the user by public_id
-        except jwt.ExpiredSignatureError or jwt.InvalidTokenError:
+            jwt.decode(token, Config.SECRET_KEY, algorithms="HS256")
+            # Find the user by public_id approach is causing errors
+            # route requests so have commented it out for now
+            # current_user = User.query.
+            # filter_by(public_id=data['public_id']).first()
+        except (jwt.ExpiredSignatureError, jwt.InvalidTokenError):
             return abort(401, message="Token is invalid.")
-        except:
-            return abort(401, message="There is an issue with the Token validation.")
-        
-        # removed the user to see if this is the issue
+        except Exception:
+            return abort(401,
+                         message="There is an issue with Token validation.")
         return f(*args, **kwargs)
-    
     return decorated

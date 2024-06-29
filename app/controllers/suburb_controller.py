@@ -1,14 +1,19 @@
 from flask import current_app
 from flask.views import MethodView
-from app.services.suburb_service import get_all_suburbs, get_suburb_by_id, create_suburb,update_suburb_by_id, delete_suburb_by_id
 from flask_smorest import Blueprint, abort
+
+from app.auth.token_required_decorator import token_required
+from app.exceptions.CustomExceptions import NotFoundException
 from app.schemas.suburb_schema import SuburbSchema
 from app.schemas.suburb_schema_args import SuburbSchemaArgs
-from app.exceptions.CustomErrors import NotFoundException
-from app.auth.token_required_decorator import token_required
+from app.services.suburb_service import (
+    create_suburb, delete_suburb_by_id, get_all_suburbs,
+    get_suburb_by_id, update_suburb_by_id
+)
 
 # blueprint adds to the factory function / making it reusable
 bp = Blueprint('suburb', __name__, url_prefix='/api/v1/suburbs', description="Operations on suburbs")
+
 
 @bp.route('/')
 class Suburbs(MethodView):
@@ -25,9 +30,9 @@ class Suburbs(MethodView):
         all_suburbs = get_all_suburbs()
         current_app.logger.info(f"All suburbs successfully sent with a count of {len(all_suburbs)} suburbs")
         return all_suburbs
-    
-    @token_required 
-    @bp.arguments(SuburbSchemaArgs) # Parse and validates the request body
+
+    @token_required
+    @bp.arguments(SuburbSchemaArgs)  # Parse and validates the request body
     @bp.response(201, SuburbSchema())  # Flask-Smorest with Marshmallow takes care of serialize/deserializing
     def post(self, data):
         """
@@ -56,13 +61,13 @@ class Suburbs(MethodView):
             abort(404, message=f'Issue with a Suburb Id')
         except Exception as e:
             current_app.logger.error(f"Error in a new suburb: {e}")
-            abort(500, message="Failed to create suburb")  
+            abort(500, message="Failed to create suburb")
 
-        
+
 @bp.route('/<int:id>')
 class SuburbsById(MethodView):
-    @bp.response(200, SuburbSchema()) 
-    def get(self,id): #captured as a view arg
+    @bp.response(200, SuburbSchema())
+    def get(self, id):  # captured as a view arg
         """
         Get a suburb by Id
 
@@ -76,7 +81,7 @@ class SuburbsById(MethodView):
         404: Not Found - If a suburb with the specified ID does not exist.
         500: Internal Server Error - If an unexpected error occurs during retrieval.
         """
-        try: 
+        try:
             found_suburb = get_suburb_by_id(id)
             current_app.logger.info(f"Found suburb: {found_suburb}")
             return found_suburb
@@ -86,10 +91,10 @@ class SuburbsById(MethodView):
         except Exception as e:
             current_app.logger.error(f"Error in updating suburb with id {id}: {e}")
             abort(500, message="Failed to update a suburb")
-    
-    @token_required        
+
+    @token_required
     @bp.response(204)
-    def delete(self,id):
+    def delete(self, id):
         """
         Delete a suburb by Id (Protected)
 
@@ -104,18 +109,18 @@ class SuburbsById(MethodView):
         404: Not Found - If a suburb with the specified ID does not exist.
         500: Internal Server Error - If an unexpected error occurs during deletion.
         """
-        try: 
-            delete_suburb_by_id(id)  
+        try:
+            delete_suburb_by_id(id)
             current_app.logger.info(f"suburb with {id} has been deleted")
         except NotFoundException as e:
             current_app.logger.error(f"Error: {e}")
             abort(404, message=f'Suburb with id: {id} not found when trying to delete')
         except Exception as e:
             current_app.logger.error(f"Error in deleting suburb with id {id}: {e}")
-            abort(500, message="Failed to delete a suburb")        
+            abort(500, message="Failed to delete a suburb")
 
-    @token_required 
-    @bp.arguments(SuburbSchemaArgs) 
+    @token_required
+    @bp.arguments(SuburbSchemaArgs)
     @bp.response(200, SuburbSchema())
     def patch(self, data, id):
         """
@@ -146,4 +151,4 @@ class SuburbsById(MethodView):
             abort(404, message=f'Suburb with id: {id} not found when trying to update')
         except Exception as e:
             current_app.logger.error(f"Error in updating suburb with id {id}: {e}")
-            abort(500, message="Failed to update a suburb")  
+            abort(500, message="Failed to update a suburb")

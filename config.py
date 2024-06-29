@@ -5,6 +5,7 @@ basedir = os.path.abspath(os.path.dirname(__file__))
 
 load_dotenv(os.path.join(basedir, ".env"))
 
+
 class Config:
     SECRET_KEY = os.environ.get('SECRET_KEY')
     DB_PASSWORD = os.environ.get('DB_PASSWORD')
@@ -22,5 +23,4 @@ class Config:
     OPENAPI_URL_PREFIX = "/api/v1"
     OPENAPI_SWAGGER_UI_PATH = "/docs"
     OPENAPI_SWAGGER_UI_URL = "https://cdn.jsdelivr.net/npm/swagger-ui-dist/"
-    
-    #TASK: Review logger config and add here
+    # TASK: Review logger config and add here
