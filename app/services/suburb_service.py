@@ -1,7 +1,7 @@
 from flask import current_app
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm.exc import NoResultFound
-from app.exceptions.CustomExceptions import CustomValidationError, NotFoundException
+from app.exceptions.CustomExceptions import ServiceException, NotFoundException, DbValidationError
 from app.models.models import State
 from app.repositories.suburb_repository import (
     repo_create_suburb,
@@ -19,9 +19,9 @@ def get_all_suburbs():
 def create_suburb(data):
     # check fields aren't blank
     if not data.get('name'):
-        raise CustomValidationError("The 'name' field cannot be blank.")
+        raise ServiceException("The 'name' field cannot be blank.")
     if not data.get('state'):
-        raise CustomValidationError("The 'state' field cannot be blank.")
+        raise ServiceException("The 'state' field cannot be blank.")
 
     # basic data cleaning
     cleaned_data = {}
@@ -38,7 +38,7 @@ def create_suburb(data):
     # TASK: see how i can make ENUM more flexible
     if state_enum is None:
         valid_states = ', '.join(state.value for state in State)
-        raise CustomValidationError(f"{data['state']} is not a valid state. Must be one of: {valid_states}")
+        raise ServiceException(f"{data['state']} is not a valid state. Must be one of: {valid_states}")
 
     # Update to ENUM
     cleaned_data['state'] = state_enum
@@ -48,7 +48,11 @@ def create_suburb(data):
         current_app.logger.info(f"create_suburb is sending back {created_suburb}")
         return created_suburb
     except IntegrityError as e:
-        raise CustomValidationError(f"Validation error on creating a suburb: {e}")
+        error_message = str(e.orig)
+        if "Duplicate entry" in error_message:
+            raise DbValidationError(f"Suburbs or States need to have unique names")
+        if "NOT NULL" in error_message:
+            raise DbValidationError(f"Suburbs or States need to have an input value")
 
 
 def get_suburb_by_id(id):
@@ -83,5 +87,5 @@ def update_suburb_by_id(updated_data, id):
     except NoResultFound:
         raise NotFoundException(f"Suburb with id: {id} not found")
     except IntegrityError as e:
-        raise CustomValidationError(f"Validation error on creating suburb: {e}")
+        raise ServiceException(f"Validation error on creating suburb: {e}")
     

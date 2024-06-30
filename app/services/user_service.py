@@ -5,7 +5,7 @@ from flask import current_app
 import jwt
 from sqlalchemy.exc import IntegrityError
 from werkzeug.security import check_password_hash
-from app.exceptions.CustomExceptions import CustomValidationError
+from app.exceptions.CustomExceptions import ServiceException
 from app.repositories.user_repository import (
     repo_create_user,
     repo_find_user_by_username,
@@ -23,14 +23,14 @@ def find_user_by_username(username):
     user = repo_find_user_by_username(username)
 
     if not user:
-        raise CustomValidationError("There was an issue with your login details. Please try again.")
+        raise ServiceException("There was an issue with your login details. Please try again.")
 
     return user
 
 
 def authenticate_user(data):
     if not data or not data.get('username'):
-        raise CustomValidationError("Both username and password are required.")
+        raise ServiceException("Both username and password are required.")
     # To ensure validation failure remain unknown
 
     user = find_user_by_username(data.get('username'))
@@ -39,7 +39,7 @@ def authenticate_user(data):
     if check_password_hash(user.password, data.get('password')):
         return user
     else:
-        raise CustomValidationError("There was an issue with your login details. Please try again.")
+        raise ServiceException("There was an issue with your login details. Please try again.")
 
 
 def generate_token(user):
@@ -53,20 +53,20 @@ def generate_token(user):
 
 def signup_user(data):
     if len(data.get('password')) < 5:
-        raise CustomValidationError(f"Passwords need to be longer than 5 characters")
+        raise ServiceException(f"Passwords need to be longer than 5 characters")
 
     # positive look ahead (doesn't enforce order) to have at least one number and one alphabetic character
     if not re.search(r"(?=.*\d)(?=.*[a-zA-Z])", data.get('password')):
-        raise CustomValidationError(f"Password should contain a mix of characters and numbers")
+        raise ServiceException(f"Password should contain a mix of characters and numbers")
 
     # Stolen from stackoverflow
     email_regex = r"^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$"
     if not re.match(email_regex, data.get('email')):
-        raise CustomValidationError(f"Emails need to be in a valid email format")
+        raise ServiceException(f"Emails need to be in a valid email format")
 
     try:
         new_user = repo_create_user(data)
         current_app.logger.info(f"Signup_user is sending back {new_user}")
         return new_user
     except IntegrityError:
-        raise CustomValidationError(f"There was an issue with your login details. Please try again.")
+        raise ServiceException(f"Username or email needs to be unique. Please try again.")

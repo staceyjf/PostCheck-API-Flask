@@ -2,7 +2,7 @@ from flask import current_app
 from flask.views import MethodView
 from flask_smorest import Blueprint, abort
 from app.auth.token_required_decorator import token_required
-from app.exceptions.CustomExceptions import CustomValidationError
+from app.exceptions.CustomExceptions import ServiceException
 from app.schemas.user_schema import UserSchema
 from app.schemas.user_schema_args import UserSchemaArgs
 from app.schemas.token_schema import TokenSchema
@@ -58,9 +58,9 @@ class UserSignIn(MethodView):
             token = generate_token(user)
             current_app.logger.info("Token successfully provided")
             return token
-        except CustomValidationError as e:
+        except ServiceException as e:
             current_app.logger.error(f"Authentication failed: {e}")
-            abort(401, message=f"Authentication failed: {e}")
+            abort(401, message=f"{e}")
 
 
 @bp.route('/signup')
@@ -87,9 +87,9 @@ class UsersLogin(MethodView):
             user = signup_user(data)
             current_app.logger.info("User was successfully signed up")
             return user
-        except CustomValidationError as e:
+        except ServiceException as e:
             current_app.logger.error(f"Validation error: {e}")
-            abort(400, message=f'Validation error: {e}')
+            abort(400, message=f'{e}')
         except Exception as e:
             current_app.logger.error(f"Error in creating a new user: {e}")
             abort(500, message="Failed to create user")

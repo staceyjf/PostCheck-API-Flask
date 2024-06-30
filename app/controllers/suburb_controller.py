@@ -3,7 +3,7 @@ from flask.views import MethodView
 from flask_smorest import Blueprint, abort
 
 from app.auth.token_required_decorator import token_required
-from app.exceptions.CustomExceptions import NotFoundException
+from app.exceptions.CustomExceptions import NotFoundException, DbValidationError, ServiceException
 from app.schemas.suburb_schema import SuburbSchema
 from app.schemas.suburb_schema_args import SuburbSchemaArgs
 from app.services.suburb_service import (
@@ -49,16 +49,18 @@ class Suburbs(MethodView):
         201: Success - Returns the newly created suburb.
         400: Bad Request - If validation of the request body fails.
         401: Unauthorized - If the authentication token is missing or invalid.
-        404: Not Found - If specified resources are not found.
         500: Internal Server Error - If an unexpected error occurs during suburb creation.
         """
         try:
             new_suburb = create_suburb(data)
             current_app.logger.info(f"Created suburb: {new_suburb}")
             return new_suburb
-        except NotFoundException as e:
-            current_app.logger.error(f"Issue with a Suburb Id: {e}")
-            abort(404, message=f'Issue with a Suburb Id')
+        except ServiceException as e:
+            current_app.logger.error(f"Validation error: {e}")
+            abort(400, message=f'{e}')
+        except DbValidationError as e:
+            current_app.logger.error(f"Validation error: {e}")
+            abort(400, message=f'{e}')
         except Exception as e:
             current_app.logger.error(f"Error in a new suburb: {e}")
             abort(500, message="Failed to create suburb")

@@ -1,13 +1,6 @@
 from marshmallow import Schema, fields
 
 
-# To ensure we are getting the name rather than the string representation of the ENUM
-class MyBaseSchema(Schema):
-    class Meta:
-        ordered = True
-        fields = ("id", "name", "state")
-
-
 # get ENUM value and not name
 class EnumField(fields.Field):
     def _serialize(self, value, attr, obj, **kwargs):
@@ -17,7 +10,10 @@ class EnumField(fields.Field):
         return value.value
 
 
-class SuburbSchemaArgs(MyBaseSchema):
+class SuburbSchemaArgs(Schema):
+    class Meta:
+        ordered = True
+        fields = ("id", "name", "state")
     id = fields.Int(required=False)
     name = fields.Str(required=False)
     state = EnumField(required=False)

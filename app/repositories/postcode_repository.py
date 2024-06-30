@@ -52,19 +52,21 @@ def repo_update_by_id(updated_data, postcode_id):
     return updated_postcode
 
 
-def query_postcode_by_suburbName(data):
+def query_postcodes_by_suburbName(data):
     search_pattern = f"%{data['suburb']}%"
 
-    found_postcode = db.session.query(PostCode).join(PostCode.associatedSuburbs) \
+    found_postcodes = db.session.query(PostCode).join(PostCode.associatedSuburbs) \
         .filter(Suburb.name.ilike(search_pattern)) \
         .options(joinedload(PostCode.associatedSuburbs)) \
         .all()
-    return found_postcode
+    print(found_postcodes)
+    return found_postcodes or []
 
 
-def query_postcode_name(data):
+def query_postcodes_name(data):
     search_pattern = f"%{data['postcode']}%"
 
-    found_postcode = db.session.query(PostCode).filter(PostCode.postcode.ilike(search_pattern)) \
+    found_postcodes = db.session.query(PostCode).filter(PostCode.postcode.ilike(search_pattern)) \
         .options(joinedload(PostCode.associatedSuburbs)).all()
-    return found_postcode
+    print(found_postcodes)
+    return found_postcodes or []

@@ -11,7 +11,7 @@ from app.schemas.postcode_schema_args import (
     PostCodeSchemaArgs, PostCodeSchemaBySuburbName
 )
 from app.exceptions.CustomExceptions import (
-    NotFoundException, CustomValidationError)
+    NotFoundException, ServiceException, DbValidationError)
 from app.auth.token_required_decorator import token_required
 
 # blueprint adds to the factory function / making it reusable
@@ -53,7 +53,6 @@ class Postcodes(MethodView):
         201: Success - Returns the newly created postcode.
         400: Bad Request - If validation of the request body fails.
         401: Unauthorized - If the authentication token is missing or invalid.
-        404: Not Found - If the specified suburb ID does not exist.
         500: Internal Server Error - If an unexpected error occurs during
         postcode creation.
         """
@@ -61,15 +60,18 @@ class Postcodes(MethodView):
             new_postcode = create_postcode(data)
             current_app.logger.info(f"Created postcode: {new_postcode}")
             return new_postcode
-        except CustomValidationError as e:
+        except ServiceException as e:
             current_app.logger.error(f"Validation error: {e}")
-            abort(400, message=f'Validation error: {e}')
+            abort(400, message=f'{e}')
         except NotFoundException as e:
             current_app.logger.error(f"Issue with a Suburb Id: {e}")
-            abort(404, message=f"Issue with a Suburb Id: {e}")
+            abort(400, message=f'Issue when trying to add Suburb Id')
+        except DbValidationError as e:
+            current_app.logger.error(f"Validation error: {e}")
+            abort(400, message=f'{e}')
         except Exception as e:
             current_app.logger.error(f"Error in creating a new postcode: {e}")
-            abort(500, message="Failed to create postcode")
+            abort(500, message="Error: Failed to query postcodes by suburb. Please try again later.")
 
 
 @bp.route('/query')
@@ -94,7 +96,6 @@ class PostcodesQueries(MethodView):
         the query.
         400: Bad Request - If validation of the query parameters fails.
         401: Unauthorized - If the authentication token is missing or invalid.
-        404: Not Found - If the specified ID does not exist.
         500: Internal Server Error - If an unexpected error occurs during
         the query.
         """
@@ -108,16 +109,13 @@ class PostcodesQueries(MethodView):
             current_app.logger.info(
                 f"Created postcode: {all_related_postcodes}")
             return all_related_postcodes
-        except CustomValidationError as e:
+        except ServiceException as e:
             current_app.logger.error(f"Validation error: {e}")
             abort(400, message=f'Validation error: {e}')
-        except NotFoundException as e:
-            current_app.logger.error(f"Resource not found: {e}")
-            abort(404, message=f'Resource not found: {e}')
         except Exception as e:
             current_app.logger.error(
                 f"Error occurred when querying postcodes by suburb: {e}")
-            abort(500, message="Failed to query postcodes by suburb")
+            abort(500, message="Error: Failed to query postcodes by suburb. Please try again later.")
 
 
 @bp.route('/<int:id>')

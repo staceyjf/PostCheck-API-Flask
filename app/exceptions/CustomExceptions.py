@@ -2,5 +2,10 @@ class NotFoundException(Exception):
     pass
 
 
-class CustomValidationError(Exception):
+class ServiceException(Exception):
     pass
+
+
+class DbValidationError(Exception):
+    pass
+

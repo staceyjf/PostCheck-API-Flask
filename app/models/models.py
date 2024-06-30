@@ -5,10 +5,8 @@ from sqlalchemy import Table, Column, Integer, ForeignKey
 from sqlalchemy import Enum as SQLEnum
 
 # join table for the many-to-many relationship
-postcode_suburb_association = Table
-(
-    'postcode_suburb',
-    db.metadata,
+postcode_suburb_association = Table(
+    'postcode_suburb', db.metadata,
     Column('postcode_id', Integer, ForeignKey('postcodes.id')),
     Column('suburb_id', Integer, ForeignKey('suburbs.id'))
 )

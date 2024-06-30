@@ -16,6 +16,7 @@ class PostCodeSchemaArgs(Schema):
 class PostCodeSchemaBySuburbName(Schema):
     class Meta:
         # To maintain the order as they are defined when being serialized or deserialized
+        fields = ("postcode", "suburb")
         ordered = False
-    suburb = fields.Str(required=False)
     postcode = fields.Str(required=False)
+    suburb = fields.Str(required=False)
