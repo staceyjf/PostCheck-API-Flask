@@ -8,6 +8,7 @@ from logging.config import dictConfig
 from flask_smorest import Api
 from flask_cors import CORS
 
+
 def create_app():
     # configure builtin Logging using Flask example
     # TASK: Look into FileHandler and other configs for my needs
@@ -15,7 +16,7 @@ def create_app():
         'version': 1,
         'formatters': {'all_info_logger': {
             'format': '[%(asctime)s] %(levelname)s in %(module)s: %(message)s',
-        }}, 
+        }},
         'handlers': {'wsgi': {
             'class': 'logging.StreamHandler',
             'stream': 'ext://flask.logging.wsgi_errors_stream',
@@ -28,29 +29,29 @@ def create_app():
     })
 
     app = Flask(__name__)
-    
+
     app.config.from_object(Config)
     db.init_app(app)
     migrate.init_app(app, db)
-    
+
     @app.route('/')
     def hello_world():
         return 'Hello, World!'
-    
+
     # cors.init_app(app, resources={r"/api/*": {"origins": "http://localhost:5173"}})
     CORS(app, resources={r"/api/*": {"origins": "*"}})
-    
+
     # api.init_app(app) didn't seem to work
     api = Api(app)
-    
+
     api.register_blueprint(postcode_bp)
     api.register_blueprint(suburb_bp)
     api.register_blueprint(user_bp)
-    
+
     # hack to overcome the cors issue
     @app.before_request
     def basic_authentication():
         if request.method.lower() == 'options':
             return Response()
-    
+
     return app
