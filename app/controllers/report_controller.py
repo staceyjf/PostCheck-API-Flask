@@ -14,8 +14,8 @@ bp = Blueprint('reporting', __name__, url_prefix='/api/v1/reporting', descriptio
 class Report(MethodView):
     # @token_required
     @bp.response(200, ReportSchema(many=True))
-    # @bp.paginate()
-    def get(self):
+    @bp.paginate()
+    def get(self, pagination_parameters):
         """
         Fetch pricing reporting for properties
         Retrieves the average price by state across a time (dataset was from '18 to '21)
@@ -25,10 +25,14 @@ class Report(MethodView):
         500: Internal Server Error - If an unexpected error occurs during data processing.
         """
         try:
-            all_data = process_property_data()
+            # allows flexiblity in allowing clients to request custom page sizes
+            # TASK: review if its better to cap page sizes
+            page = pagination_parameters.page
+            page_size = pagination_parameters.page_size
+            all_data, total = process_property_data(page, page_size)
             # pagination logic for smorest
             current_app.logger.info(f"Avg price by state data has been successfully read")
-            return all_data
+            return all_data, {"total": total, "page": page, "page_size": page_size}
         except ServiceException as e:
             current_app.logger.error(f"Validation error: {e}")
             abort(400, message="There was an issue while processing the report data. Please try again later.")
