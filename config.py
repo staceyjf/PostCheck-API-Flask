@@ -23,4 +23,4 @@ class Config:
     OPENAPI_URL_PREFIX = "/api/v1"
     OPENAPI_SWAGGER_UI_PATH = "/docs"
     OPENAPI_SWAGGER_UI_URL = "https://cdn.jsdelivr.net/npm/swagger-ui-dist/"
-    # TASK: Review logger config and add here
+    # TASK: Review enhanced logger config to write to a file for better server monitoring and debugging
