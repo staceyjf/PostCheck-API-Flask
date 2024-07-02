@@ -51,6 +51,7 @@ def create_suburb(data):
         error_message = str(e.orig)
         if "Duplicate entry" in error_message:
             raise DbValidationError(f"Suburbs or States need to have unique names")
+        # TAS: rework the business logic so it check if there is a match for name and state rather than just name
         if "NOT NULL" in error_message:
             raise DbValidationError(f"Suburbs or States need to have an input value")
 
@@ -88,4 +89,3 @@ def update_suburb_by_id(updated_data, id):
         raise NotFoundException(f"Suburb with id: {id} not found")
     except IntegrityError as e:
         raise ServiceException(f"Validation error on creating suburb: {e}")
-    

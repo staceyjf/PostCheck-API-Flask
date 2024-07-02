@@ -39,7 +39,7 @@ class State(Enum):
 class Suburb(db.Model):
     __tablename__ = 'suburbs'
     id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(100), nullable=False, unique=True)
+    name = db.Column(db.String(100), nullable=False, unique=False)
     state = Column(SQLEnum(State), nullable=False)
     associatedPostCodes = relationship("PostCode", secondary=postcode_suburb_association,
                                        back_populates="associatedSuburbs")
@@ -58,3 +58,30 @@ class User(db.Model):
 
     def __str__(self):
         return f"Username: {self.username}, Email: {self.email}"
+
+
+# This table is ignored for migrations via the include_object hook to exclude this table
+class Reporting(db.Model):
+    __tablename__ = 'property_reporting'
+    id = db.Column(db.Integer, primary_key=True)
+    state = db.Column(db.String(10))
+    date_sold = db.Column(db.Date)
+    avg_price = db.Column(db.Integer)
+
+    def __str__(self):
+        return f"state: {self.state}, date_sold: {self.date_sold}, avg_price:{self.avg_price}"
+
+    def to_dict(self):
+        return {
+            "id": self.id,
+            "state": self.state,
+            "date_sold": self.date_sold,
+            "avg_price": self.avg_price,
+
+        }
+
+    def save(self, *args, **kwargs):
+        raise NotImplementedError("This table is read-only.")
+
+    def delete(self, *args, **kwargs):
+        raise NotImplementedError("This table is read-only.")

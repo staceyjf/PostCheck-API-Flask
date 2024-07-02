@@ -1,19 +1,14 @@
-from flask import current_app
+# from flask import current_app
 from app.exceptions.CustomExceptions import ServiceException
-import json
-import os
+from app.repositories.reporting_repository import repo_process_property_data
 
 
 def process_property_data():
-    try:
-        # Task: review a better way to do this
-        data_file_path = os.path.join(current_app.root_path, 'data', 'avg_price_by_state.json')
+    report = repo_process_property_data()
 
-        # Open and read the data from the file
-        with open(data_file_path, "r") as chart_data:
-            data = json.load(chart_data)  # convert into a dict
-            return data
-    except FileNotFoundError as e:
-        raise ServiceException(f"The file was not found: {e}")
-    except OSError as e:
-        raise ServiceException(f"There was an issue with reading the file: {e}")
+    if not report:
+        raise ServiceException("There was an issues with the reporting processing service. Please try again.")
+
+    # current_app.logger.info(f"repo_process_property_data is sending back {report}")
+
+    return report

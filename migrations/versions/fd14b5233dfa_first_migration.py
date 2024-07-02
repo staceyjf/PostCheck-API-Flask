@@ -1,8 +1,8 @@
-"""fresh start
+"""first migration
 
-Revision ID: 8a37640a0fbe
+Revision ID: fd14b5233dfa
 Revises: 
-Create Date: 2024-06-28 14:59:03.870223
+Create Date: 2024-07-02 09:29:27.827216
 
 """
 from alembic import op
@@ -10,7 +10,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision = '8a37640a0fbe'
+revision = 'fd14b5233dfa'
 down_revision = None
 branch_labels = None
 depends_on = None
@@ -28,8 +28,7 @@ def upgrade():
     sa.Column('id', sa.Integer(), nullable=False),
     sa.Column('name', sa.String(length=100), nullable=False),
     sa.Column('state', sa.Enum('NEW_SOUTH_WALES', 'VICTORIA', 'QUEENSLAND', 'SOUTH_AUSTRALIA', 'WESTERN_AUSTRALIA', 'TASMANIA', 'NORTHERN_TERRITORY', 'AUSTRALIAN_CAPITAL_TERRITORY', name='state'), nullable=False),
-    sa.PrimaryKeyConstraint('id', name=op.f('pk_suburbs')),
-    sa.UniqueConstraint('name', name=op.f('uq_suburbs_name'))
+    sa.PrimaryKeyConstraint('id', name=op.f('pk_suburbs'))
     )
     op.create_table('user',
     sa.Column('id', sa.Integer(), nullable=False),
