@@ -11,7 +11,7 @@ from app.repositories.user_repository import (
     repo_find_user_by_username,
     repo_get_all_users,
 )
-from config import Config
+from config import DevelopmentConfig
 
 
 def get_all_users():
@@ -47,7 +47,7 @@ def generate_token(user):
     token = jwt.encode({
         'public_id': user.public_id,
         'exp': datetime.now() + timedelta(minutes=30),
-    }, Config.SECRET_KEY, algorithm="HS256")
+    }, DevelopmentConfig.SECRET_KEY, algorithm="HS256")
     return {"accessToken": token}
 
 

@@ -8,6 +8,11 @@ load_dotenv(os.path.join(basedir, ".env"))
 
 class Config:
     SECRET_KEY = os.environ.get('SECRET_KEY')
+    # TASK: Review enhanced logger config to write to a file for better server monitoring and debugging
+
+
+class DevelopmentConfig(Config):
+    DEBUG = True
     DB_PASSWORD = os.environ.get('DB_PASSWORD')
     DB_USERNAME = os.environ.get('DB_USERNAME')
     DB_HOST = os.environ.get('DB_HOST', 'localhost')
@@ -23,4 +28,3 @@ class Config:
     OPENAPI_URL_PREFIX = "/api/v1"
     OPENAPI_SWAGGER_UI_PATH = "/docs"
     OPENAPI_SWAGGER_UI_URL = "https://cdn.jsdelivr.net/npm/swagger-ui-dist/"
-    # TASK: Review enhanced logger config to write to a file for better server monitoring and debugging

@@ -1,4 +1,4 @@
-from config import Config
+from config import DevelopmentConfig
 from flask import Flask, request, Response
 from app.controllers.postcode_controller import bp as postcode_bp
 from app.controllers.suburb_controller import bp as suburb_bp
@@ -31,7 +31,7 @@ def create_app():
 
     app = Flask(__name__)
 
-    app.config.from_object(Config)
+    app.config.from_object(DevelopmentConfig)
     db.init_app(app)
     migrate.init_app(app, db)
 
