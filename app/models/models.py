@@ -71,15 +71,6 @@ class Reporting(db.Model):
     def __str__(self):
         return f"state: {self.state}, date_sold: {self.date_sold}, avg_price:{self.avg_price}"
 
-    def to_dict(self):
-        return {
-            "id": self.id,
-            "state": self.state,
-            "date_sold": self.date_sold,
-            "avg_price": self.avg_price,
-
-        }
-
     def save(self, *args, **kwargs):
         raise NotImplementedError("This table is read-only.")
 

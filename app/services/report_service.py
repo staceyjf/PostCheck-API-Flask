@@ -1,8 +1,6 @@
 # from flask import current_app
 from app.exceptions.CustomExceptions import ServiceException
 from app.repositories.reporting_repository import repo_process_property_data
-from app.schemas.reporting_schema import ReportSchema
-from flask import current_app
 
 
 def process_property_data():
@@ -47,7 +45,7 @@ def process_property_data():
         # Find the correct datapoint to append the new data
         for datapoint in chartObjects:
             if datapoint["id"] == id:
-                chartPoint = {"x": item.avg_price, "y": item.date_sold}
+                chartPoint = {"y": item.avg_price, "x": item.date_sold}
                 datapoint["data"].append(chartPoint)
                 break   # break the loop once the datapoint has been updated
 
