@@ -51,21 +51,4 @@ def process_property_data():
                 datapoint["data"].append(chartPoint)
                 break   # break the loop once the datapoint has been updated
 
-    # Calculate start and end indices for the current page (starts a zero index)
-    # start = (page - 1) * page_size
-    # end = start + page_size
-
-    # current_app.logger.info(start)
-    # current_app.logger.info(end)
-
-    current_app.logger.info("This is line 84")
-    current_app.logger.info(type(chartObjects[0]))
-    current_app.logger.info(len(chartObjects))
-    # current_app.logger.info("This is line report page")
-    # report_page = chartObjects[start:end]
-    # current_app.logger.info(report_page)
-
-    #  smorest requires a total count for handling pagination
-    # total_count = len(report)
-
     return chartObjects
