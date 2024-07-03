@@ -11,13 +11,13 @@ from app.services.suburb_service import (
     get_suburb_by_id, update_suburb_by_id
 )
 
-# blueprint adds to the factory function / making it reusable
+
 bp = Blueprint('suburb', __name__, url_prefix='/api/v1/suburbs', description="Operations on suburbs")
 
 
 @bp.route('/')
 class Suburbs(MethodView):
-    @bp.response(200, SuburbSchema(many=True))  # smorest add for openApi docs
+    @bp.response(200, SuburbSchema(many=True))  
     def get(self):
         """
         Fetch all suburbs
@@ -25,15 +25,15 @@ class Suburbs(MethodView):
         Retrieves a list of all suburbs from the database.
 
         ### Responses
-        200: Success - Returns a list of all suburbs.
+        - 200: Success - Returns a list of all suburbs.
         """
         all_suburbs = get_all_suburbs()
         current_app.logger.info(f"All suburbs successfully sent with a count of {len(all_suburbs)} suburbs")
         return all_suburbs
 
     @token_required
-    @bp.arguments(SuburbSchemaArgs)  # Parse and validates the request body
-    @bp.response(201, SuburbSchema())  # Flask-Smorest with Marshmallow takes care of serialize/deserializing
+    @bp.arguments(SuburbSchemaArgs)
+    @bp.response(201, SuburbSchema())
     def post(self, data):
         """
         Create a new suburb (Protected)
@@ -42,14 +42,13 @@ class Suburbs(MethodView):
 
         ### Request Body
         - `name`: String, required
-        - `postcode`: String, required
         - `state`: String, required
 
         ### Responses
-        201: Success - Returns the newly created suburb.
-        400: Bad Request - If validation of the request body fails.
-        401: Unauthorized - If the authentication token is missing or invalid.
-        500: Internal Server Error - If an unexpected error occurs during suburb creation.
+        - 201: Success - Returns the newly created suburb.
+        - 400: Bad Request - If validation of the request body fails.
+        - 401: Unauthorized - If the authentication token is missing or invalid.
+        - 500: Internal Server Error - If an unexpected error occurs during suburb creation.
         """
         try:
             new_suburb = create_suburb(data)
@@ -79,9 +78,9 @@ class SuburbsById(MethodView):
         - `id`: Integer, required - The ID of the suburb to retrieve.
 
         ### Responses
-        200: Success - Returns the suburb with the specified ID.
-        404: Not Found - If a suburb with the specified ID does not exist.
-        500: Internal Server Error - If an unexpected error occurs during retrieval.
+        - 200: Success - Returns the suburb with the specified ID.
+        - 404: Not Found - If a suburb with the specified ID does not exist.
+        - 500: Internal Server Error - If an unexpected error occurs during retrieval.
         """
         try:
             found_suburb = get_suburb_by_id(id)
@@ -106,10 +105,10 @@ class SuburbsById(MethodView):
         - `id`: Integer, required - The ID of the suburb to delete.
 
         ### Responses
-        204: No Content - Successfully deleted the suburb.
-        401: Unauthorized - If the authentication token is missing or invalid.
-        404: Not Found - If a suburb with the specified ID does not exist.
-        500: Internal Server Error - If an unexpected error occurs during deletion.
+        - 204: No Content - Successfully deleted the suburb.
+        - 401: Unauthorized - If the authentication token is missing or invalid.
+        - 404: Not Found - If a suburb with the specified ID does not exist.
+        - 500: Internal Server Error - If an unexpected error occurs during deletion.
         """
         try:
             delete_suburb_by_id(id)
@@ -132,17 +131,16 @@ class SuburbsById(MethodView):
 
         ### Request Body
         - `name`: String, optional
-        - `postcode`: String, optional
         - `state`: String, optional
 
         ### Path Parameters
         - `id`: Integer, required - The ID of the suburb to update.
 
         ### Responses
-        200: Success - Returns the updated suburb.
-        401: Unauthorized - If the authentication token is missing or invalid.
-        404: Not Found - If a suburb with the specified ID does not exist.
-        500: Internal Server Error - If an unexpected error occurs during update.
+        - 200: Success - Returns the updated suburb.
+        - 401: Unauthorized - If the authentication token is missing or invalid.
+        - 404: Not Found - If a suburb with the specified ID does not exist.
+        - 500: Internal Server Error - If an unexpected error occurs during update.
         """
         try:
             updated_suburb = update_suburb_by_id(data, id)

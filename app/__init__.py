@@ -11,7 +11,7 @@ from flask_cors import CORS
 
 
 def create_app():
-    # configure builtin Logging using Flask example
+    # Configured builtin logging via Flask doc example
     # TASK: Look into FileHandler and other configs for my needs
     dictConfig({
         'version': 1,
@@ -32,25 +32,28 @@ def create_app():
     app = Flask(__name__)
 
     app.config.from_object(DevelopmentConfig)
-    db.init_app(app)
-    migrate.init_app(app, db)
+    db.init_app(app)  # Set up SQLAclhemcy
+    migrate.init_app(app, db)  # Set up Flask Migrate
 
     @app.route('/')
     def hello_world():
         return 'Hello, World!'
 
-    # cors.init_app(app, resources={r"/api/*": {"origins": "http://localhost:5173"}})
+    # Set up Flask Cors to handle CORS but config not working
+    # hack on line 56
     CORS(app, resources={r"/api/*": {"origins": "*"}})
 
-    # api.init_app(app) didn't seem to work
-    api = Api(app)
+    api = Api(app)  # Set up smorest
 
+    # Register app's blueprints which aid modularization
+    # easy to add more functionality
     api.register_blueprint(postcode_bp)
     api.register_blueprint(suburb_bp)
     api.register_blueprint(user_bp)
     api.register_blueprint(reporting_bp)
 
-    # hack to overcome the cors issue
+    # Hack to overcome the cors issue as line 43 configs not working
+    # Source: stackoverflow
     @app.before_request
     def basic_authentication():
         if request.method.lower() == 'options':

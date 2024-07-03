@@ -13,15 +13,17 @@ class Report(MethodView):
     # @token_required
     def get(self):
         """
-        Fetch pricing reporting for properties
-        Retrieves the average price by state across a time (dataset was from '18 to '21)
+        Fetch pricing reporting for properties (Protected)
+
+        Retrieves the average price by state across a time.
+
         #### Responses
-        200: Success - Returns avg property proerties by state across time.
-        401: Unauthorized - If the authentication token is missing or invalid.
-        500: Internal Server Error - If an unexpected error occurs during data processing.
+        - 200: Success - Returns avg property proerties by state across time.
+        - 401: Unauthorized - If the authentication token is missing or invalid.
+        - 500: Internal Server Error - If an unexpected error occurs during data processing.
         """
         try:
-            # TASK: review a better approach than pagination
+            # TASK: review a better approach than pagination for managing loading
             all_data = process_property_data()
             current_app.logger.info(f"Avg price by state data has been successfully read")
             # manual serialise the data

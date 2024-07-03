@@ -14,7 +14,7 @@ from app.exceptions.CustomExceptions import (
     NotFoundException, ServiceException, DbValidationError)
 from app.auth.token_required_decorator import token_required
 
-# blueprint adds to the factory function / making it reusable
+# defining blueprint to aid in modularization
 bp = Blueprint('postcode', __name__, url_prefix='/api/v1/postcodes', description="Operations on postcodes")
 
 
@@ -26,9 +26,11 @@ class Postcodes(MethodView):
     def get(self):
         """
         Fetch all postcodes
+
         Retrieves a list of all postcodes from the database.
+
         #### Responses
-        200: Success - Returns a list of all postcodes.
+        - 200: Success - Returns a list of all postcodes.
         """
         all_postcodes = get_all_postcodes()
         current_app.logger.info(f"All postcodes successfully sent with a count of {len(all_postcodes)} postcodes")
@@ -40,20 +42,20 @@ class Postcodes(MethodView):
     # Flask-Smorest with Marshmallow takes care of serialize/deserializing
     def post(self, data):
         """
-        Create a new postcode
+        Create a new postcode (Protected)
 
         Creates a new postcode with the provided data.
 
         #### Request Body
-        - `suburb_id`: Integer, required -
-        The ID of the suburb associated with the postcode.
+        - `suburbIds`: Integer, optional -
+        The IDs of the suburbs associated with the postcode.
         - `postcode`: String, required - The postcode value.
 
         #### Responses
-        201: Success - Returns the newly created postcode.
-        400: Bad Request - If validation of the request body fails.
-        401: Unauthorized - If the authentication token is missing or invalid.
-        500: Internal Server Error - If an unexpected error occurs during
+        - 201: Success - Returns the newly created postcode.
+        - 400: Bad Request - If validation of the request body fails.
+        - 401: Unauthorized - If the authentication token is missing or invalid.
+        - 500: Internal Server Error - If an unexpected error occurs during
         postcode creation.
         """
         try:
@@ -92,11 +94,11 @@ class PostcodesQueries(MethodView):
         suburbs for.
 
         #### Responses
-        200: Success - Returns a list of postcodes or suburbs matching
+        - 200: Success - Returns a list of postcodes or suburbs matching
         the query.
-        400: Bad Request - If validation of the query parameters fails.
-        401: Unauthorized - If the authentication token is missing or invalid.
-        500: Internal Server Error - If an unexpected error occurs during
+        - 400: Bad Request - If validation of the query parameters fails.
+        - 401: Unauthorized - If the authentication token is missing or invalid.
+        - 500: Internal Server Error - If an unexpected error occurs during
         the query.
         """
         try:
@@ -131,9 +133,9 @@ class PostCodeById(MethodView):
         - `id`: Integer, required - The ID of the postcode to retrieve.
 
         #### Responses
-        200: Success - Returns the postcode with the specified ID.
-        404: Not Found - If a postcode with the specified ID does not exist.
-        500: Internal Server Error - If an unexpected error occurs during
+        - 200: Success - Returns the postcode with the specified ID.
+        - 404: Not Found - If a postcode with the specified ID does not exist.
+        - 500: Internal Server Error - If an unexpected error occurs during
         retrieval.
         """
         try:
@@ -152,7 +154,7 @@ class PostCodeById(MethodView):
     @bp.response(204)
     def delete(self, id):
         """
-        Delete a postcode by ID
+        Delete a postcode by ID (Protected)
 
         Deletes a postcode by its ID.
 
@@ -160,10 +162,10 @@ class PostCodeById(MethodView):
         - `id`: Integer, required - The ID of the postcode to delete.
 
         #### Responses
-        204: No Content - Successfully deleted the postcode.
-        401: Unauthorized - If the authentication token is missing or invalid.
-        404: Not Found - If a postcode with the specified ID does not exist.
-        500: Internal Server Error - If an unexpected error occurs during
+        - 204: No Content - Successfully deleted the postcode.
+        - 401: Unauthorized - If the authentication token is missing or invalid.
+        - 404: Not Found - If a postcode with the specified ID does not exist.
+        - 500: Internal Server Error - If an unexpected error occurs during
         deletion.
         """
         try:
@@ -181,7 +183,7 @@ class PostCodeById(MethodView):
     @bp.response(200, PostCodeSchema())
     def patch(self, data, id):
         """
-        Update a postcode by ID
+        Update a postcode by ID (Protected)
 
         Updates a postcode by its ID with the provided data.
 
@@ -194,10 +196,10 @@ class PostCodeById(MethodView):
         - `id`: Integer, required - The ID of the postcode to update.
 
         #### Responses
-        200: Success - Returns the updated postcode.
-        401: Unauthorized - If the authentication token is missing or invalid.
-        404: Not Found - If a postcode with the specified ID does not exist.
-        500: Internal Server Error - If an unexpected error occurs
+        - 200: Success - Returns the updated postcode.
+        - 401: Unauthorized - If the authentication token is missing or invalid.
+        - 404: Not Found - If a postcode with the specified ID does not exist.
+        - 500: Internal Server Error - If an unexpected error occurs
         during update.
         """
         try:

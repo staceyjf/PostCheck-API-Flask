@@ -25,8 +25,8 @@ class Users(MethodView):
         This route is protected and requires a valid authentication token.
 
         #### Responses:
-        200: Success - Returns a list of all users.
-        401: Unauthorized - If the authentication token is missing or invalid.
+        - 200: Success - Returns a list of all users.
+        - 401: Unauthorized - If the authentication token is missing or invalid.
         """
         all_users = get_all_users()
         current_app.logger.info(f"All users successfully sent with a count of {len(all_users)} postcodes")
@@ -49,8 +49,8 @@ class UserSignIn(MethodView):
         - password: String
 
         #### Responses:
-        201: Success - Returns an authentication token.
-        401: Unauthorized - If authentication fails due to invalid credentials.
+        - 201: Success - Returns an authentication token.
+        - 401: Unauthorized - If authentication fails due to invalid credentials.
         """
         try:
             user = authenticate_user(data)
@@ -79,9 +79,9 @@ class UsersLogin(MethodView):
         - email: String (optional)
 
         #### Responses:
-        201: Success - Returns the newly created user.
-        400: Bad Request - If validation of the request body fails.
-        500: Internal Server Error - If an unexpected error occurs during user creation.
+        - 201: Success - Returns the newly created user.
+        - 400: Bad Request - If validation of the request body fails.
+        - 500: Internal Server Error - If an unexpected error occurs during user creation.
         """
         try:
             user = signup_user(data)
