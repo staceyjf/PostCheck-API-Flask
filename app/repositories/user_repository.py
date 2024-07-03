@@ -9,7 +9,6 @@ def repo_get_all_users():
 
 
 def repo_find_user_by_username(supplied_username):
-    print(supplied_username)
     return User.query.filter_by(username=supplied_username).first()
 
 

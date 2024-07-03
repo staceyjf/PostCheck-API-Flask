@@ -18,7 +18,7 @@ def get_all_postcodes():
 
 
 def create_postcode(data):
-    # check fields aren't blank
+    # basic validation
     if not data.get('postcode'):
         raise ServiceException("The 'postcode' field cannot be blank.")
 
@@ -91,7 +91,7 @@ def update_postcode_by_id(updated_data, id):
 
 
 def fetch_postcodes_by_suburb(data):
-    # check fields aren't blank
+    # basic validation
     if not data['suburb']:
         raise ServiceException("Suburb name can't be blank")
 
@@ -104,7 +104,7 @@ def fetch_postcodes_by_suburb(data):
 
 
 def fetch_relatedSuburbs_by_postcode(data):
-    # check fields aren't blank
+    # basic validation
     if not data['postcode']:
         raise ServiceException("Postcode can't be blank")
 

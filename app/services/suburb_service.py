@@ -17,7 +17,7 @@ def get_all_suburbs():
 
 
 def create_suburb(data):
-    # check fields aren't blank
+    # basic validation
     if not data.get('name'):
         raise ServiceException("The 'name' field cannot be blank.")
     if not data.get('state'):
@@ -45,6 +45,8 @@ def create_suburb(data):
     # Update to ENUM
     cleaned_data['state'] = state_enum
 
+    # TASK: rework the business logic so it check if there is a match for name and state rather than just name
+
     try:
         created_suburb = repo_create_suburb(cleaned_data)
         current_app.logger.info(f"create_suburb is sending back {created_suburb}")
@@ -53,7 +55,6 @@ def create_suburb(data):
         error_message = str(e.orig)
         if "Duplicate entry" in error_message:
             raise DbValidationError(f"Suburbs or States need to have unique names")
-        # TAS: rework the business logic so it check if there is a match for name and state rather than just name
         if "NOT NULL" in error_message:
             raise DbValidationError(f"Suburbs or States need to have an input value")
 

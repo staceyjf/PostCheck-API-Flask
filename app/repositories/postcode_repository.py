@@ -7,18 +7,16 @@ def repo_get_all_postcodes():
     return PostCode.query.options(joinedload(PostCode.associatedSuburbs)).order_by(PostCode.postcode).all()
 
 
-# Use join load to populate the assosciated suburbs via the join table
+# Use join load to populate the associated suburbs via the join table
 def repo_get_postcode_by_id(postcode_id):
     return PostCode.query.options(joinedload(PostCode.associatedSuburbs)).filter_by(id=postcode_id).first()
 
 
 def repo_create_postcode_with_suburbs(data):
-    # logic to add suburbs
-    # bulk query fetching
     # TASK: Look at Transcation management to rollback if unsuccessful
 
     suburb_ids = data.get('suburbIds', [])
-    suburbs = Suburb.query.filter(Suburb.id.in_(suburb_ids)).all()
+    suburbs = Suburb.query.filter(Suburb.id.in_(suburb_ids)).all()  # bulk query fetching
 
     new_postcode = PostCode(postcode=data['postcode'], associatedSuburbs=suburbs)
     db.session.add(new_postcode)
@@ -42,8 +40,7 @@ def repo_update_by_id(updated_data, postcode_id):
     print(updated_data)
 
     if 'suburbIds' in updated_data:
-        # logic to update suburbs
-        updated_postcode.associatedSuburbs.clear()  # clear the associations
+        updated_postcode.associatedSuburbs.clear()  # clear the associations to rest
         suburb_ids = updated_data.get('suburbIds', [])
         suburbs = Suburb.query.filter(Suburb.id.in_(suburb_ids)).all()
         updated_postcode.associatedSuburbs = suburbs
