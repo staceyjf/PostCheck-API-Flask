@@ -5,8 +5,8 @@ class ChartPointSchema(Schema):
     class Meta:
         ordered = True
         fields = ("x", "y")
-    x = fields.Float()
-    y = fields.Date()
+    y = fields.Float()
+    x = fields.Date()
 
 
 class ReportSchema(Schema):
@@ -16,7 +16,3 @@ class ReportSchema(Schema):
     id = fields.Str()
     color = fields.Str()
     data = fields.List(fields.Nested(ChartPointSchema))
-
-
-class ReportingSchema(Schema):
-    chartData = fields.List(fields.Nested(ReportSchema))

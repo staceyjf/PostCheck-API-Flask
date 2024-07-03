@@ -31,22 +31,27 @@ def process_property_data():
     #       },
     #              ]
     # }}
-    chartObjects = []  # [{},{}]
+    chart_list = []  # [{},{}]
     ids_seen = set()
 
     for item in report:
         id = item.state
         if id not in ids_seen:
             # If id not seen, create new dict
-            reportObj = {"id": id, "color": colours[id], "data": []}
-            chartObjects.append(reportObj)
+            report_dict = {"id": id, "color": colours[id], "data": []}
+            chart_list.append(report_dict)
             ids_seen.add(id)
 
         # Find the correct datapoint to append the new data
-        for datapoint in chartObjects:
+        for datapoint in chart_list:
             if datapoint["id"] == id:
                 chartPoint = {"y": item.avg_price, "x": item.date_sold}
                 datapoint["data"].append(chartPoint)
                 break   # break the loop once the datapoint has been updated
+            
+    print(chart_list[0]['data'][0]['y'])
+    print(chart_list[0]['data'][0]['x'])
+    print(type(chart_list[0]['data'][0]['y']))
+    print(type(chart_list[0]['data'][0]['x']))
 
-    return chartObjects
+    return chart_list
