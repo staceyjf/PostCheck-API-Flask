@@ -108,8 +108,9 @@ class PostcodesQueries(MethodView):
                 all_related_postcodes = fetch_relatedSuburbs_by_postcode(args)
             else:
                 all_related_postcodes = []
+
             current_app.logger.info(
-                f"Created postcode: {all_related_postcodes}")
+                f"Query successfully returned: {all_related_postcodes}")
             return all_related_postcodes
         except ServiceException as e:
             current_app.logger.error(f"Validation error: {e}")

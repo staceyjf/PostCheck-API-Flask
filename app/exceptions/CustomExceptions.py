@@ -8,4 +8,3 @@ class ServiceException(Exception):
 
 class DbValidationError(Exception):
     pass
-

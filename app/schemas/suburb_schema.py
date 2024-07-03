@@ -13,5 +13,5 @@ class SuburbSchema(Schema):
         ordered = True
         fields = ("id", "name", "state")
     id = fields.Int(dump_only=True)
-    name = fields.Str()
-    state = EnumField()
+    name = fields.Str(required=False)
+    state = EnumField(required=False)

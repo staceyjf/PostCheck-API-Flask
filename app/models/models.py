@@ -16,7 +16,7 @@ class PostCode(db.Model):
     __tablename__ = 'postcodes'
     id = db.Column(db.Integer, primary_key=True)
     postcode = db.Column(db.String(4), nullable=False, unique=True)
-    # Define the M:M relationship via the join table with a bi-directional relationship (back_populates))
+    # Define the M:M relationship via the join table with a bi-directional relationship (back_populates)
     associatedSuburbs = relationship("Suburb", secondary=postcode_suburb_association,
                                      back_populates="associatedPostCodes")
 
@@ -25,7 +25,7 @@ class PostCode(db.Model):
         return f"PostCode: {self.postcode}, associatedSuburbs: {self.associatedSuburbs}"
 
 
-class State(Enum):
+class States(Enum):
     NEW_SOUTH_WALES = 'NSW'
     VICTORIA = 'VIC'
     QUEENSLAND = 'QLD'
@@ -40,7 +40,7 @@ class Suburb(db.Model):
     __tablename__ = 'suburbs'
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(100), nullable=False, unique=False)
-    state = Column(SQLEnum(State), nullable=False)
+    state = Column(SQLEnum(States), nullable=False)
     associatedPostCodes = relationship("PostCode", secondary=postcode_suburb_association,
                                        back_populates="associatedSuburbs")
 

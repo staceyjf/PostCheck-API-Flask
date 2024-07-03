@@ -17,7 +17,7 @@ bp = Blueprint('suburb', __name__, url_prefix='/api/v1/suburbs', description="Op
 
 @bp.route('/')
 class Suburbs(MethodView):
-    @bp.response(200, SuburbSchema(many=True))  
+    @bp.response(200, SuburbSchema(many=True))
     def get(self):
         """
         Fetch all suburbs
