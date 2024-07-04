@@ -1,0 +1,24 @@
+name: flake8 Lint
+
+on: [push, pull_request]
+
+permissions:
+  contents: read
+
+jobs:
+  flake8-lint:
+    runs-on: ubuntu-latest
+    name: Lint
+    steps:
+      - name: Check out source repository
+        uses: actions/checkout@v3
+      - name: Set up Python environment
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.10"
+      - name: Install Pipenv
+        run: pip install pipenv
+      - name: Install dependencies with Pipenv
+        run: pipenv install --dev
+      - name: Run Flake8 with Pipenv
+        run: pipenv run flake8
