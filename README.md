@@ -54,13 +54,13 @@ Understanding the relationship of the data was an important starting place and t
   <img src="./planning /postcheck_erd.png" style="max-width: 800px;" alt="ERD for postcheck API">
 </div>
 
-### Design inspiration
+<!-- ### Design inspiration
 
 I took inspiration from the existing Aus-Post service to help shape my design which can be seen below:
 
 <div align="center">
   <img src="./planning /aus-post-inspiration.png" style="max-width: 800px;" alt="Image of Aus-post postcode checker">
-</div>
+</div> -->
 
 ### Design choices
 
@@ -71,6 +71,11 @@ I took inspiration from the existing Aus-Post service to help shape my design wh
 3. **Modular Services Architecture:** The use of factory functions in the create_app() and utilizing Flask-Smorest's blueprints enabled the API to be designed into loosely coupled components where each service is focused on a specific entities (Postcodes, Suburbs, Users and Reporting).
 
 4. **Authentication:** Following a discussion with my \_nology coach, we agreed that JWT implemented via including the token in the Authorization header of HTTP requests. The server validates this token and determines the response based on its validity.
+
+which manifested into a flow of data via the following layers:
+<div align="center">
+  <img src="./planning /flowData.jpg" style="max-width: 800px;" alt="Flow of data">
+</div>
 
 ## Key Features:
 

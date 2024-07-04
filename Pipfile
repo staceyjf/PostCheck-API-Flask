@@ -11,9 +11,10 @@ flask-smorest = "*"
 python-dotenv = "*"
 pymysql = "*"
 pyjwt = "*"
-flake8 = "*"
+flask-sqlalchemy = "*"
 
 [dev-packages]
+flake8 = "*"
 
 [requires]
 python_version = "3.10"
