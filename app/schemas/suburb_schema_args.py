@@ -17,3 +17,7 @@ class SuburbSchemaArgs(Schema):
     id = fields.Int(required=False)
     name = fields.Str(required=False)
     state = EnumField(required=False)
+
+
+class SuburbSchemaBySuburbName(Schema):
+    postcode = fields.Str()

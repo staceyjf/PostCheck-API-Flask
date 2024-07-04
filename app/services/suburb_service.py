@@ -9,6 +9,7 @@ from app.repositories.suburb_repository import (
     repo_get_all_suburbs,
     repo_get_suburb_by_id,
     repo_update_by_id,
+    query_suburbs_by_postcodeValue
 )
 
 
@@ -106,3 +107,16 @@ def update_suburb_by_id(updated_data, id):
         raise NotFoundException(f"Suburb with id: {id} not found")
     except IntegrityError as e:
         raise ServiceException(f"Validation error on creating suburb: {e}")
+
+
+def fetch_suburbs_by_postcode(data):
+    # basic validation
+    if not data['postcode']:
+        raise ServiceException("Postcode field can't be blank")
+
+    try:
+        found_suburbs = query_suburbs_by_postcodeValue(data)
+        current_app.logger.info(f"fetch_suburbs_by_postcode is sending back {found_suburbs}")
+        return found_suburbs
+    except IntegrityError as e:
+        raise ServiceException(f"{e}")

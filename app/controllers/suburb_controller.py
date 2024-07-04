@@ -5,10 +5,10 @@ from flask_smorest import Blueprint, abort
 from app.auth.token_required_decorator import token_required
 from app.exceptions.CustomExceptions import NotFoundException, DbValidationError, ServiceException
 from app.schemas.suburb_schema import SuburbSchema
-from app.schemas.suburb_schema_args import SuburbSchemaArgs
+from app.schemas.suburb_schema_args import SuburbSchemaArgs, SuburbSchemaBySuburbName
 from app.services.suburb_service import (
     create_suburb, delete_suburb_by_id, get_all_suburbs,
-    get_suburb_by_id, update_suburb_by_id
+    get_suburb_by_id, update_suburb_by_id, fetch_suburbs_by_postcode
 )
 
 
@@ -65,6 +65,46 @@ class Suburbs(MethodView):
             abort(500, message="Failed to create suburb")
 
 
+@bp.route('/query')
+class SuburbQueries(MethodView):
+    @bp.arguments(SuburbSchemaBySuburbName, location="query")
+    @bp.response(200, SuburbSchema(many=True))
+    def get(self, args):
+        """
+        Query a suburb name by postcode value
+
+        Returns a list of suburbs associated with the postcode value.
+
+        #### Query Parameters
+        - `suburb`: String, optional - The postcode value to query
+        suburbs for.
+
+        #### Responses
+        - 200: Success - Returns a list of suburbs matching
+        the query.
+        - 400: Bad Request - If validation of the query parameters fails.
+        - 401: Unauthorized - If the authentication token is missing or invalid.
+        - 500: Internal Server Error - If an unexpected error occurs during
+        the query.
+        """
+        try:
+            if 'postcode' in args:
+                all_related_suburbs = fetch_suburbs_by_postcode(args)
+            else:
+                all_related_suburbs = []
+
+            current_app.logger.info(
+                f"Query successfully returned: {all_related_suburbs}")
+            return all_related_suburbs
+        except ServiceException as e:
+            current_app.logger.error(f"Validation error: {e}")
+            abort(400, message=f'Validation error: {e}')
+        except Exception as e:
+            current_app.logger.error(
+                f"Error occurred when querying suburbs by postcode: {e}")
+            abort(500, message="Error: Failed to query suburbs by postcode. Please try again later.")
+            
+            
 @bp.route('/<int:id>')
 class SuburbsById(MethodView):
     @bp.response(200, SuburbSchema())

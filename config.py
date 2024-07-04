@@ -14,8 +14,6 @@ class Config:
     DB_NAME = os.environ.get('DB_NAME')
     DB_PORT = os.environ.get('DB_PORT', '3306')
     SQLALCHEMY_DATABASE_URI = f'mysql+pymysql://{DB_USERNAME}:{DB_PASSWORD}@{DB_HOST}:{DB_PORT}/{DB_NAME}'
-    POSTGRES_DB_PASSWORD = os.environ('POSTGRES_DB_PASSWORD')
-    POSTGRES_DB_USERNAME = os.environ('POSTGRES_DB_USERNAME')
     API_TITLE = "PostCheck - your powerful postcode & suburb checker"
     API_VERSION = "v1"
     OPENAPI_VERSION = "3.0.2"
