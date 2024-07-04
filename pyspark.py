@@ -70,8 +70,8 @@ def main():
         # Task: Local development only / consider impact of real world configuration
         jdbc_url = "jdbc:postgresql://localhost:5432/aus_property"
         connection_properties = {
-            "user": Config.DB_USERNAME,
-            "password": Config.DB_PASSWORD,
+            "user": Config.POSTGRES_DB_USERNAME,
+            "password": Config.POSTGRES_DB_PASSWORD,
             "driver": "org.postgresql.Driver"
         }
 
@@ -114,10 +114,10 @@ def main():
         avg_price_df_with_id = avg_price_df.withColumn('id', monotonically_increasing_id() + 1)
 
         # write the data to the postcheck dbs
-        mysql_url = f"jdbc:mysql://localhost:3306/{Config.DB_MYSQL_DBNAME}"
+        mysql_url = f"jdbc:mysql://{Config.DB_HOST}:{Config.DB_PORT}/{Config.DB_NAME}"
         mysql_properties = {
-            "user": Config.DB_MYSQL_USERNAME,
-            "password": Config.DB_MYSQL_PASSWORD,
+            "user": Config.DB_USERNAME,
+            "password": Config.DB_PASSWORD,
             "driver": "com.mysql.cj.jdbc.Driver"
         }
 

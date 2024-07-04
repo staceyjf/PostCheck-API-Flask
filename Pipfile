@@ -21,7 +21,6 @@ pyarrow = "*"
 setuptools = "*"
 psycopg2-binary = "*"
 python-dotenv = "*"
-pymysql = "*"
 flake8 = "*"
 
 [requires]
