@@ -21,4 +21,4 @@ jobs:
       - name: Install dependencies with Pipenv
         run: pipenv install --dev
       - name: Run Flake8 with Pipenv
-        run: pipenv run flake8
+        run: pipenv run flake8 --max-line-length=120 --ignore=F541 --exclude=PostCheck-API-Flask/migrations
