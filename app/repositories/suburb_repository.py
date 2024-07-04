@@ -42,8 +42,7 @@ def query_suburbs_by_postcodeValue(data):
     search_pattern = f"%{data['postcode']}%"
 
     found_postcodes = db.session.query(Suburb).join(Suburb.associatedPostCodes) \
-        .filter(PostCode.name.ilike(search_pattern)) \
+        .filter(PostCode.postcode.ilike(search_pattern)) \
         .options(joinedload(Suburb.associatedPostCodes)) \
         .all()
-    print(found_postcodes)
     return found_postcodes or []

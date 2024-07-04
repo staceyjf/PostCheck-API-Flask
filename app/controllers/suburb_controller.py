@@ -103,8 +103,8 @@ class SuburbQueries(MethodView):
             current_app.logger.error(
                 f"Error occurred when querying suburbs by postcode: {e}")
             abort(500, message="Error: Failed to query suburbs by postcode. Please try again later.")
-            
-            
+
+
 @bp.route('/<int:id>')
 class SuburbsById(MethodView):
     @bp.response(200, SuburbSchema())
