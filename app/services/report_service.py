@@ -49,9 +49,4 @@ def process_property_data():
                 datapoint["data"].append(chartPoint)
                 break   # break the loop once the datapoint has been updated
             
-    print(chart_list[0]['data'][0]['y'])
-    print(chart_list[0]['data'][0]['x'])
-    print(type(chart_list[0]['data'][0]['y']))
-    print(type(chart_list[0]['data'][0]['x']))
-
     return chart_list

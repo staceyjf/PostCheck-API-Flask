@@ -1,0 +1,34 @@
+services:
+  backend:
+    container_name: "postcheck-backend"
+    build:
+      context: .
+      args:
+        DB_PASSWORD: ${DB_PASSWORD}
+        DB_USERNAME: ${DB_USERNAME}
+        DB_NAME: ${DB_NAME}
+        DB_PORT: ${DB_PORT}
+        DB_HOST: ${DB_HOST}
+        SECRET_KEY: ${SECRET_KEY}
+    ports:
+      - "8000:8000"
+    env_file:
+      - ".env"
+    depends_on:
+      - db
+
+  db:
+    image: mysql:8.0.38-debian
+    container_name: "postcheck-db"
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_DATABASE: ${DB_NAME}
+    ports:
+      - "${DB_PORT}:3306"
+    volumes:
+      - postcheck-api-flask_db_data:/var/lib/mysql
+
+volumes:
+  postcheck-api-flask_db_data:
+
+  

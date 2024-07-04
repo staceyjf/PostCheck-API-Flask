@@ -1,4 +1,4 @@
-from config import DevelopmentConfig
+from config import ProductionConfig
 from flask import Flask, request, Response
 from app.controllers.postcode_controller import bp as postcode_bp
 from app.controllers.suburb_controller import bp as suburb_bp
@@ -31,7 +31,7 @@ def create_app():
 
     app = Flask(__name__)
 
-    app.config.from_object(DevelopmentConfig)
+    app.config.from_object(ProductionConfig)
     db.init_app(app)  # Set up SQLAclhemcy
     migrate.init_app(app, db)  # Set up Flask Migrate
 
