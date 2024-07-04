@@ -20,7 +20,7 @@ class Report(MethodView):
         Retrieves the average price by state across a time.
 
         #### Responses
-        - 200: Success - Returns avg property proerties by state across time.
+        - 200: Success - Returns avg property properties by state across time.
         - 401: Unauthorized - If the authentication token is missing or invalid.
         - 500: Internal Server Error - If an unexpected error occurs during data processing.
         """

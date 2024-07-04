@@ -21,7 +21,6 @@ class PostCode(db.Model):
                                      back_populates="associatedPostCodes")
 
     def __str__(self):
-        # TASK: think about how to get suburbs properly
         return f"PostCode: {self.postcode}, associatedSuburbs: {self.associatedSuburbs}"
 
 

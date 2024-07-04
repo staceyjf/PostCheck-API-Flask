@@ -1,7 +1,7 @@
 import jwt  # imports for PyJWT authentication
 from flask import request
 from flask_smorest import abort
-from config import DevelopmentConfig
+from config import ProductionConfig
 from functools import wraps
 
 
@@ -17,7 +17,7 @@ def token_required(f):
             return abort(401, message="Token is missing.")
         # Decoding to fetch the payload
         try:
-            jwt.decode(token, DevelopmentConfig.SECRET_KEY, algorithms="HS256")
+            jwt.decode(token, ProductionConfig.SECRET_KEY, algorithms="HS256")
             # Revisit role based auth and how to return current_user in controller
             # Find the user by public_id approach is causing errors
             # route requests so have commented it out for now
