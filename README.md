@@ -35,7 +35,7 @@ This API works hand in hand with the Typescript React app (available [here](http
 2. Cd into `PostCheck-API-Flask` folder
 3. Set up the virtual envs with with `pipenv install` and activate the virtual environment with `pipenv shell` \*
 4. Add your credential in a .env to connect to a mySQL database. An example env configure can be found at `env_example.txt`
-5. Start the production web server with via `gunicorn -w 4 -b 127.0.0.1:8000 manage:app` \*
+5. Start the production web server with via `gunicorn -w 2 -b 127.0.0.1:8000 manage:app` \*
 ```
 
 _Note: The above steps assume that you already have `pipenv` installed. If you prefer, you can replace pipenv with your tool of choice for managing virtual environments.e_

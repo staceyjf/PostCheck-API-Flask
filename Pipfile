@@ -12,6 +12,8 @@ python-dotenv = "*"
 pymysql = "*"
 pyjwt = "*"
 flask-sqlalchemy = "*"
+gunicorn = "*"
+cryptography = "*"
 
 [dev-packages]
 flake8 = "*"

@@ -1,0 +1,18 @@
+name: postcheck-flask
+
+services:
+  backend:
+    container_name: "postcheck-backend"
+    build:
+      context: .
+      args:
+        DB_PASSWORD: ${DB_PASSWORD}
+        DB_USERNAME: ${DB_USERNAME}
+        DB_NAME: ${DB_NAME}
+        DB_PORT: ${DB_PORT}
+        DB_HOST: ${DB_HOST}
+        SECRET_KEY: ${SECRET_KEY}
+    ports:
+      - "8000:8000"
+    env_file:
+      - ".env"

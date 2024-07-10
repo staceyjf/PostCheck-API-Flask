@@ -4,14 +4,14 @@ from flask_smorest import Blueprint, abort
 from app.exceptions.CustomExceptions import ServiceException
 from app.services.report_service import process_property_data
 from app.schemas.reporting_schema import ReportSchema
-# from app.auth.token_required_decorator import token_required
+from app.auth.token_required_decorator import token_required
 
 bp = Blueprint('reporting', __name__, url_prefix='/api/v1/reporting', description="Operations on reporting")
 
 
 @bp.route('/')
 class Report(MethodView):
-    # @token_required
+    @token_required
     @bp.response(200, ReportSchema(many=True))
     def get(self):
         """

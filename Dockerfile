@@ -1,4 +1,4 @@
-FROM --platform=$BUILDPLATFORM python:3.10-alpine AS builder
+FROM --platform=$BUILDPLATFORM python:3.10-alpine
 
 ARG DB_PASSWORD
 ARG DB_USERNAME
@@ -18,10 +18,23 @@ ENV DB_PASSWORD=${DB_PASSWORD} \
 
 WORKDIR /app
 
+# Set up a non-privileged user 
+ARG UID=10001
+RUN adduser \
+    --disabled-password \
+    --gecos "" \
+    --home "/nonexistent" \
+    --shell "/sbin/nologin" \
+    --no-create-home \
+    --uid "${UID}" \
+    appuser
+
 COPY Pipfile Pipfile.lock ./
 RUN python -m pip install --upgrade --no-cache-dir  pip && \
     pip install pipenv && \
-    pipenv install --dev --system --deploy
+    pipenv install --system --deploy
+
+USER appuser
 
 COPY . /app
 
