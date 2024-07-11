@@ -54,3 +54,4 @@ jspm_packages/
 *.dll
 *.so
 *.dylib
+.env

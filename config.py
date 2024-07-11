@@ -10,9 +10,9 @@ class Config:
     SECRET_KEY = os.environ.get('SECRET_KEY')
     DB_PASSWORD = os.environ.get('DB_PASSWORD')
     DB_USERNAME = os.environ.get('DB_USERNAME')
-    DB_HOST = os.environ.get('DB_HOST', 'localhost')
+    DB_HOST = os.environ.get('DB_HOST')
     DB_NAME = os.environ.get('DB_NAME')
-    DB_PORT = os.environ.get('DB_PORT', '3306')
+    DB_PORT = os.environ.get('DB_PORT')
     SQLALCHEMY_DATABASE_URI = f'mysql+pymysql://{DB_USERNAME}:{DB_PASSWORD}@{DB_HOST}:{DB_PORT}/{DB_NAME}'
     API_TITLE = "PostCheck - your powerful postcode & suburb checker"
     API_VERSION = "v1"

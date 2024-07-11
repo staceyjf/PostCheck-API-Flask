@@ -8,7 +8,8 @@ from sqlalchemy import Enum as SQLEnum
 postcode_suburb_association = Table(
     'postcode_suburb', db.metadata,
     Column('postcode_id', Integer, ForeignKey('postcodes.id')),
-    Column('suburb_id', Integer, ForeignKey('suburbs.id'))
+    Column('suburb_id', Integer, ForeignKey('suburbs.id')),
+    db.PrimaryKeyConstraint('postcode_id', 'suburb_id')
 )
 
 

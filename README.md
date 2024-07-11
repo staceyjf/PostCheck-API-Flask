@@ -28,6 +28,11 @@ This API works hand in hand with the Typescript React app (available [here](http
   <img src="./planning /postcheckAPI.gif" alt="Homepage">
 </div>
 
+## Deployment
+
+1. Flask Gunicorn server: Deployed via Azure Web Apps using a Docker container registered in Azure Container Registry (ACR).
+2. MySQL Cloud DB: Aiven
+
 ## Build Steps
 
 ```bash
@@ -35,7 +40,7 @@ This API works hand in hand with the Typescript React app (available [here](http
 2. Cd into `PostCheck-API-Flask` folder
 3. Set up the virtual envs with with `pipenv install` and activate the virtual environment with `pipenv shell` \*
 4. Add your credential in a .env to connect to a mySQL database. An example env configure can be found at `env_example.txt`
-5. Start the production web server with via `gunicorn -w 2 -b 127.0.0.1:8000 manage:app` \*
+5. Start the production web server with via `gunicorn manage:app` \*
 ```
 
 _Note: The above steps assume that you already have `pipenv` installed. If you prefer, you can replace pipenv with your tool of choice for managing virtual environments.e_
@@ -73,6 +78,7 @@ I took inspiration from the existing Aus-Post service to help shape my design wh
 4. **Authentication:** Following a discussion with my \_nology coach, we agreed that JWT implemented via including the token in the Authorization header of HTTP requests. The server validates this token and determines the response based on its validity.
 
 which manifested into a flow of data via the following layers:
+
 <div align="center">
   <img src="./planning /flowData.jpg" style="max-width: 800px;" alt="Flow of data">
 </div>
@@ -116,12 +122,6 @@ which manifested into a flow of data via the following layers:
 
 3. **CORS:** Despite adding Flask-CORS to handle Cross-Origin Resource Sharing, additional configuration was necessary to bypass the default security restrictions for cross-origin requests.
 
-## In the Pipeline
-
-1. **Docker-Compose Setup:** Utilize Docker-compose to establish a development environment comprising of a Flask backend and a MySQL database service, streamlining the setup process and ensuring consistency across development environments.
-
-2. **Deployment to Azure Container Instances:** Deploy via Azure Container Instances, leveraging their managed container service.
-
 ## To-Dos
 
 1. **Testing:** Implement unit testing with pyTest.
@@ -132,9 +132,18 @@ which manifested into a flow of data via the following layers:
 6. **JWT Implementation:** Transition to a cookie-based JWT exchange mechanism for improved security and user authentication management.
 7. **CI/CD Pipeline:** Implement a development workflow with Github Actions
 
+## Changelog
+
+Date: 11/07/24
+
+Updates:
+
+1. Deployment: Deployed to Azure Web App
+2. mySql DB: Created and seeded a new hosted cloud-based mysql db
+
 ## Documentation
 
-Explore the spring API documentation at: `http://localhost:8000/api/v1/docs`
+Explore the spring API documentation at: `https://postcheck-dgd3apheh6bdf0cw.australiaeast-01.azurewebsites.net/api/v1/docs`
 
 <div align="center">
   <img src="./planning /Swagger_doc_new.png" style="max-width: 600px;" alt="Swagger documentation of PostCheck API">

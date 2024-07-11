@@ -1,4 +1,4 @@
-FROM --platform=$BUILDPLATFORM python:3.10-alpine
+FROM python:3.10-alpine AS builder
 
 ARG DB_PASSWORD
 ARG DB_USERNAME
@@ -40,4 +40,4 @@ COPY . /app
 
 EXPOSE 8000
 
-CMD ["gunicorn", "-w 4", "-b 0.0.0.0:8000", "manage:app"]
+CMD ["gunicorn", "manage:app"]
