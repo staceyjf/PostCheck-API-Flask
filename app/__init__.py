@@ -31,13 +31,12 @@ def create_app():
     })
 
     app = Flask(__name__)
-    CORS(app, resources={r"/api/*": {"origins": "*"}})
+    app.wsgi_app = ProxyFix(app.wsgi_app, x_for=1, x_proto=1, x_host=1, x_port=1, x_prefix=1)
+    CORS(app, resources={r"/api/*": {"origins": "www.staceyfanner.com"}})
 
     app.config.from_object(ProductionConfig)
     db.init_app(app)  # Set up SQLAclhemcy
     migrate.init_app(app, db)  # Set up Flask Migrate
-
-    app.wsgi_app = ProxyFix(app.wsgi_app, x_for=1, x_proto=1, x_host=1, x_port=1, x_prefix=1)
 
     @app.route('/')
     def hello_world():

@@ -1,12 +1,13 @@
-name: flake8 Lint
+name: Build and deploy container app to Azure Web App - postcheck
 
-on: [push, pull_request]
-
-permissions:
-  contents: read
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
 
 jobs:
-  flake8-lint:
+    flake8-lint:
     runs-on: ubuntu-latest
     name: Lint
     steps:
@@ -22,3 +23,45 @@ jobs:
         run: pipenv install --dev
       - name: Run Flake8 with Pipenv
         run: pipenv run flake8 --max-line-length=120 --ignore=F541 --exclude=migrations
+
+  build:
+    runs-on: ubuntu-latest
+    needs: flake8-lint
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v2
+
+      - name: Log in to container registry
+        uses: docker/login-action@v2
+        with:
+          registry: https://postcheck.azurecr.io/
+          username: ${{ secrets.AzureAppService_ContainerUsername_b2a8d0e339fa4da9a3a032efe2d1b3a5 }}
+          password: ${{ secrets.AzureAppService_ContainerPassword_e626d86c10f445d8a38a16004a973525 }}
+
+      - name: Build and push container image to registry
+        uses: docker/build-push-action@v3
+        with:
+          context: .
+          push: true
+          tags: postcheck.azurecr.io/${{ secrets.AzureAppService_ContainerUsername_b2a8d0e339fa4da9a3a032efe2d1b3a5 }}/postcheck-backend:${{ github.sha }}
+          file: ./Dockerfile
+
+    deploy:
+      runs-on: ubuntu-latest
+      needs: build
+      environment:
+        name: 'production'
+        url: ${{ steps.deploy-to-webapp.outputs.webapp-url }}
+
+      steps:
+        - name: Deploy to Azure Web App
+          id: deploy-to-webapp
+          uses: azure/webapps-deploy@v2
+          with:
+            app-name: 'postcheck'
+            slot-name: 'production'
+            publish-profile: ${{ secrets.AzureAppService_PublishProfile_855154e423bc4fb188405e807c9066ad }}
+            images: 'postcheck.azurecr.io/${{ secrets.AzureAppService_ContainerUsername_b2a8d0e339fa4da9a3a032efe2d1b3a5 }}/postcheck-backend:${{ github.sha }}'
