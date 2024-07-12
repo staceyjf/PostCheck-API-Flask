@@ -48,6 +48,13 @@ jobs:
           push: true
           tags: postcheck.azurecr.io/${{ secrets.AzureAppService_ContainerUsername_b2a8d0e339fa4da9a3a032efe2d1b3a5 }}/postcheck-backend:${{ github.sha }}
           file: ./Dockerfile
+          build-args: |
+            DB_PASSWORD=${{ secrets.DB_PASSWORD }}
+            DB_USERNAME=${{ secrets.DB_USERNAME }}
+            DB_NAME=${{ secrets.DB_NAME }}
+            DB_PORT=${{ secrets.DB_PORT }}
+            DB_HOST=${{ secrets.DB_HOST }}
+            SECRET_KEY=${{ secrets.SECRET_KEY }}
 
   deploy:
     runs-on: ubuntu-latest
