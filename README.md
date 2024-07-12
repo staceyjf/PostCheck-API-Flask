@@ -141,6 +141,12 @@ Updates:
 1. Deployment: Deployed to Azure Web App
 2. mySql DB: Created and seeded a new hosted cloud-based mysql db
 
+Date: 12/07/24
+
+Updates:
+
+1. Addition of ProxyFix Middleware to solve the HTTPS redirecting to HTTP and causing a mixed content error on the front end: Since the deployment is on Azure Web App, which acts as a reverse proxy, it was necessary to integrate ProxyFix middleware. This middleware wraps the application to ensure Gunicorn correctly constructs the request based on the origin request's schema (HTTP/HTTPs). 
+
 ## Documentation
 
 Explore the spring API documentation at: `https://postcheck-dgd3apheh6bdf0cw.australiaeast-01.azurewebsites.net/api/v1/docs`
