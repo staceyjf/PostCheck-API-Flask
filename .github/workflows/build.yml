@@ -49,19 +49,19 @@ jobs:
           tags: postcheck.azurecr.io/${{ secrets.AzureAppService_ContainerUsername_b2a8d0e339fa4da9a3a032efe2d1b3a5 }}/postcheck-backend:${{ github.sha }}
           file: ./Dockerfile
 
-    deploy:
-      runs-on: ubuntu-latest
-      needs: build
-      environment:
-        name: "production"
-        url: ${{ steps.deploy-to-webapp.outputs.webapp-url }}
+  deploy:
+    runs-on: ubuntu-latest
+    needs: build
+    environment:
+      name: "production"
+      url: ${{ steps.deploy-to-webapp.outputs.webapp-url }}
 
-      steps:
-        - name: Deploy to Azure Web App
-          id: deploy-to-webapp
-          uses: azure/webapps-deploy@v2
-          with:
-            app-name: "postcheck"
-            slot-name: "production"
-            publish-profile: ${{ secrets.AzureAppService_PublishProfile_855154e423bc4fb188405e807c9066ad }}
-            images: "postcheck.azurecr.io/${{ secrets.AzureAppService_ContainerUsername_b2a8d0e339fa4da9a3a032efe2d1b3a5 }}/postcheck-backend:${{ github.sha }}"
+    steps:
+      - name: Deploy to Azure Web App
+        id: deploy-to-webapp
+        uses: azure/webapps-deploy@v2
+        with:
+          app-name: "postcheck"
+          slot-name: "production"
+          publish-profile: ${{ secrets.AzureAppService_PublishProfile_855154e423bc4fb188405e807c9066ad }}
+          images: "postcheck.azurecr.io/${{ secrets.AzureAppService_ContainerUsername_b2a8d0e339fa4da9a3a032efe2d1b3a5 }}/postcheck-backend:${{ github.sha }}"
