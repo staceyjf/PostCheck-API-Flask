@@ -64,7 +64,7 @@ class UserSignIn(MethodView):
 
 
 @bp.route('/signup')
-class UsersLogin(MethodView):
+class UserRegister(MethodView):
     @bp.arguments(UserSchemaArgs)
     @bp.response(201, UserSchema())
     def post(self, data):

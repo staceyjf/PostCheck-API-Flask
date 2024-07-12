@@ -1,5 +1,5 @@
 from config import ProductionConfig
-from flask import Flask, request, Response
+from flask import Flask
 from app.controllers.postcode_controller import bp as postcode_bp
 from app.controllers.suburb_controller import bp as suburb_bp
 from app.controllers.user_controller import bp as user_bp
@@ -8,6 +8,7 @@ from app.extensions import db, migrate
 from logging.config import dictConfig
 from flask_smorest import Api
 from flask_cors import CORS
+import logging
 
 
 def create_app():
@@ -29,7 +30,14 @@ def create_app():
         }
     })
 
+    # Set up basic configuration for logging
+    logging.basicConfig(level=logging.DEBUG)
+
+    # Specifically set the logging level for flask_cors to DEBUG
+    logging.getLogger('flask_cors').level = logging.DEBUG
+
     app = Flask(__name__)
+    CORS(app, resources={r"/api/*": {"origins": "*"}})
 
     app.config.from_object(ProductionConfig)
     db.init_app(app)  # Set up SQLAclhemcy
@@ -41,7 +49,7 @@ def create_app():
 
     # Set up Flask Cors to handle CORS but config not working
     # hack on line 56
-    CORS(app, resources={r"/api/*": {"origins": "*"}})
+    # CORS(app)
 
     api = Api(app)  # Set up smorest
 
@@ -51,12 +59,5 @@ def create_app():
     api.register_blueprint(suburb_bp)
     api.register_blueprint(user_bp)
     api.register_blueprint(reporting_bp)
-
-    # Hack to overcome the cors issue as line 43 configs not working
-    # Source: stackoverflow
-    @app.before_request
-    def basic_authentication():
-        if request.method.lower() == 'options':
-            return Response()
 
     return app
