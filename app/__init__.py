@@ -8,7 +8,7 @@ from app.extensions import db, migrate
 from logging.config import dictConfig
 from flask_smorest import Api
 from flask_cors import CORS
-import logging
+from werkzeug.middleware.proxy_fix import ProxyFix
 
 
 def create_app():
@@ -30,12 +30,6 @@ def create_app():
         }
     })
 
-    # Set up basic configuration for logging
-    logging.basicConfig(level=logging.DEBUG)
-
-    # Specifically set the logging level for flask_cors to DEBUG
-    logging.getLogger('flask_cors').level = logging.DEBUG
-
     app = Flask(__name__)
     CORS(app, resources={r"/api/*": {"origins": "*"}})
 
@@ -43,13 +37,11 @@ def create_app():
     db.init_app(app)  # Set up SQLAclhemcy
     migrate.init_app(app, db)  # Set up Flask Migrate
 
+    app.wsgi_app = ProxyFix(app.wsgi_app, x_for=1, x_proto=1, x_host=1, x_port=1, x_prefix=1)
+
     @app.route('/')
     def hello_world():
         return 'Hello, World!'
-
-    # Set up Flask Cors to handle CORS but config not working
-    # hack on line 56
-    # CORS(app)
 
     api = Api(app)  # Set up smorest
 
