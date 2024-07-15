@@ -2,6 +2,9 @@
 
 A Flask and mySQL Rest API which provides clients can easy way to source and query postcode and suburb information.
 
+Deployed at: https://www.staceyfanner.com/Postcheck-front/
+_Please note that I am using the free tier of Azure Web app so it can take a while to load_
+
 ## The Brief
 
 In this fictional brief, Aus-Post would like to add authentication to their service (in particular for their creating, updating, and deleting functionalities) that provides postcode and suburb information via an API.
