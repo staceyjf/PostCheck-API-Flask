@@ -4,6 +4,12 @@ A Flask and MySQL REST API that provides clients with an easy way to source and 
 
 Deployed at: https://www.staceyfanner.com/Postcheck-front/
 
+Admin user details for logging in:
+
+username: admin
+
+password: admin1234
+
 _Please note that I am using the free tier of Azure Web app so it can take a while to load_
 
 ## The Brief
