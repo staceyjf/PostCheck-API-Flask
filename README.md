@@ -1,6 +1,6 @@
-# Welcome to PostChecker-API
+# Welcome to PostChecker-API-Flask
 
-A Flask and mySQL Rest API which provides clients can easy way to source and query postcode and suburb information.
+A Flask and MySQL REST API that provides clients with an easy way to source and query postcode and suburb information.
 
 Deployed at: https://www.staceyfanner.com/Postcheck-front/
 
@@ -8,7 +8,7 @@ _Please note that I am using the free tier of Azure Web app so it can take a whi
 
 ## The Brief
 
-In this fictional brief, Aus-Post would like to add authentication to their service (in particular for their creating, updating, and deleting functionalities) that provides postcode and suburb information via an API.
+In this fictional brief, Aus-Post wants to add authentication to their service (particularly for the creation, updating, and deletion functionalities) that provides postcode and suburb information via an API.
 
 The MVP to deliver on this client brief was:
 
@@ -22,20 +22,15 @@ The MVP to deliver on this client brief was:
 Additional areas to explore:
 
 - Implement:
-  - A basic reporting endpoint powered via a pySpark data pipeline. The python script can be viewed here: (available [here](https://github.com/staceyjf/SuburbSavvy))
+  - A basic reporting endpoint powered via a PySpark data pipeline. The python script can be viewed here: (available [here](https://github.com/staceyjf/SuburbSavvy))
 
 ## Demo
 
-This API works hand in hand with the Typescript React app (available [here](https://github.com/staceyjf/Postcheck-front)) which is being demo'ed below.
+This API works hand in hand with this Typescript React app (available [here](https://github.com/staceyjf/Postcheck-front)) which is being demo'ed below.
 
 <div align="center">
   <img src="./planning /postcheckAPI.gif" alt="Homepage">
 </div>
-
-## Deployment
-
-1. Flask Gunicorn server: Deployed via Azure Web Apps using a Docker container registered in Azure Container Registry (ACR).
-2. MySQL Cloud DB: Aiven
 
 ## Build Steps
 
@@ -56,36 +51,36 @@ _Note: While I have selected a lower worker setting, review this in relation to 
 
 Understanding the relationship of the data was an important starting place and took the following steps as a result:
 
-1. PostcodeSuburbMapping was the join table which then SQLAlchemy managed
-2. Bi-directional relationship between Postcodes and Suburbs
+1. PostcodeSuburbMapping was the join table, which SQLAlchemy then managed.
+2. Bi-directional relationship between Postcodes and Suburbs, for improved ease of querying as each entity is directly accessible through the other.
 
 <div align="center">
   <img src="./planning /postcheck_erd.png" style="max-width: 800px;" alt="ERD for postcheck API">
 </div>
 
-<!-- ### Design inspiration
-
-I took inspiration from the existing Aus-Post service to help shape my design which can be seen below:
-
-<div align="center">
-  <img src="./planning /aus-post-inspiration.png" style="max-width: 800px;" alt="Image of Aus-post postcode checker">
-</div> -->
-
 ### Design choices
 
-1. **RESTful API Design:** Felt like a natural git given its wide spread adoption, compatibility and simplicity (leveraging std HTTP methods to interact with resources).
+1. **RESTful API Design:** Felt like a natural fit given its wide spread adoption, compatibility and simplicity (leveraging std HTTP methods to interact with resources).
 
-2. **Adopting the Controller-Service-Repository Pattern:** This layered architecture approach ensured clear separation of concerns, leadings to better organized and more maintainable code.
+2. **Adopting the Controller-Service-Repository Pattern:** This layered architecture approach ensured clear separation of concerns, leading to better-organized and more maintainable code.
 
-3. **Modular Services Architecture:** The use of factory functions in the create_app() and utilizing Flask-Smorest's blueprints enabled the API to be designed into loosely coupled components where each service is focused on a specific entities (Postcodes, Suburbs, Users and Reporting).
+3. **Modular Services Architecture:** The use of factory functions in create_app() and utilizing Flask-Smorest's blueprints enabled the API to be divided into loosely coupled components, with each service focused on a specific entity (Postcodes, Suburbs, Users, and Reporting).
 
-4. **Authentication:** Following a discussion with my \_nology coach, we agreed that JWT implemented via including the token in the Authorization header of HTTP requests. The server validates this token and determines the response based on its validity.
+4. **Authentication:** Following a discussion with my _nology coach, we agreed it would be beneficial for my overall learning to implement token-based JWT authentication, even though a service authentication approach like API keys linked to subscriptions might be more relevant for this type of API service.
+
+5. **Cloud Services:** As I am studying to complete the Azure Cloud Fundamentals certification, I wanted to apply my theoretical knowledge in practice so I utilized Azure Web App for deployment.
 
 which manifested into a flow of data via the following layers:
 
-<div align="center">
-  <img src="./planning /flowData.jpg" style="max-width: 800px;" alt="Flow of data">
+<div align="center" style="background: white">
+
+[![](https://mermaid.ink/img/pako:eNqVVm1v6jYU_itHubrSJrVCWr9sVJoESSm00KYErR9ChdzEAQsnzmynXHZz__tO4gQMTbvdSAjH5_F5y-PH_u5EIqZO31lLkm9g4V0vM8Dn61fwaMIyCnqDP5EDJ3sq4RdfUkUzTTQTWc_lDMcwrUy_moWqeDWubODKAFc10OCqZxDOKYl0b7HPaRBJluveA3sTLwZBs3iZdWWTsjjmtE3InfRcD3yWU14BSBbDkERbXN2dlztZud6qxR-TmYW3TI-LVxhEVcrq5Wh6CINM7BJOthR-hynLNMvWlv0x9ARGlDAsGI8tgx_6hdpg-2DwTyEpuAIbglElzOmaKS33Fvgp9GjOxf4If6aYTZ6_78ehmPlNsEgKvhr4k1VT9XmTb0J_f_e8sAJNwmBH1msqrbkAUXojsroEfckymIoGcgQde4h1SME5lefRqmcYjjhRW8CkYMf0BurXyyAVSAkNPZgRqTYp4VzsrBTq-tqXjqABlW8sol0R3XBYKOyrUlXaLPoJr3OaC8W0kPsux14YPE0HPNrQdA-P89nLqfkuHHCavrII3hgxZcKMoeOKQV1JfMjpV6G1SFtOe0STV6Jorxocud3J5wqC3169a8wonO0xe2idWfnch75Qei1ph72LZnUMX4oIO4zU79g9U-RPkBO5_cxLTe-0QwhiJmm962AxPM7ehv9j14wbEO6TliGd-oFOMhNDQSKx1bY-mc5WG-9EOsziAVxe_lmOFwsf4_9dIIVVCcNGJ4eVEUqPcrommir0UYLbGF1jnGSaStQ5Ve-GElqN9Yz5qaCSUfQ5aubvzPyMZGSNHg-EsiBN2DGqHUfIoEAOoSpFNa6Em24YqlSRtjWXMOlGVRsfP3IJwZnddEDlmAktYXD9WXcNcQ-MOXIYe9wSzm7yfd1kPA5i46CEaRN9WlueJWu7e39icDklGLSOV2m_BRydAI1vN_irhHmIfzBinL58WsTZ0VKlfqCwnfzMNGhe4EIkU6v5MyRtCQ9NFg8G1JweJTw2849mvj46oDlHJil--RL8BuIbSO23NtXl3TbW25aC9eFhe6hh4wY2tmE0hgXanuzyH_OqdML7MIhjIBBhZyUIGaO7REiUOFUQjtMEW7w3y_BFKZSx6oZg9lDCOO9_Sf5ILnCjii3tf7m6umrGlzsW603_t_zb9dlyc6TbHqLo5zwYAT3xkET_5cHy8fF95VCbHfLsGmEXcAL78ID-cMWZntuFvcd1aPLHC87k9wzoXDgplSlhMd4Gv1cLlw6qSkqXTh-HMU1IwfXSWWY_EEoKLYJ9Fjl9LQt64UhRrDdOPyFc4VuRxyiGHiOoXOlhlsbVOTsz98362vnjXxr6Xho?type=png)](https://mermaid.live/edit#pako:eNqVVm1v6jYU_itHubrSJrVCWr9sVJoESSm00KYErR9ChdzEAQsnzmynXHZz__tO4gQMTbvdSAjH5_F5y-PH_u5EIqZO31lLkm9g4V0vM8Dn61fwaMIyCnqDP5EDJ3sq4RdfUkUzTTQTWc_lDMcwrUy_moWqeDWubODKAFc10OCqZxDOKYl0b7HPaRBJluveA3sTLwZBs3iZdWWTsjjmtE3InfRcD3yWU14BSBbDkERbXN2dlztZud6qxR-TmYW3TI-LVxhEVcrq5Wh6CINM7BJOthR-hynLNMvWlv0x9ARGlDAsGI8tgx_6hdpg-2DwTyEpuAIbglElzOmaKS33Fvgp9GjOxf4If6aYTZ6_78ehmPlNsEgKvhr4k1VT9XmTb0J_f_e8sAJNwmBH1msqrbkAUXojsroEfckymIoGcgQde4h1SME5lefRqmcYjjhRW8CkYMf0BurXyyAVSAkNPZgRqTYp4VzsrBTq-tqXjqABlW8sol0R3XBYKOyrUlXaLPoJr3OaC8W0kPsux14YPE0HPNrQdA-P89nLqfkuHHCavrII3hgxZcKMoeOKQV1JfMjpV6G1SFtOe0STV6Jorxocud3J5wqC3169a8wonO0xe2idWfnch75Qei1ph72LZnUMX4oIO4zU79g9U-RPkBO5_cxLTe-0QwhiJmm962AxPM7ehv9j14wbEO6TliGd-oFOMhNDQSKx1bY-mc5WG-9EOsziAVxe_lmOFwsf4_9dIIVVCcNGJ4eVEUqPcrommir0UYLbGF1jnGSaStQ5Ve-GElqN9Yz5qaCSUfQ5aubvzPyMZGSNHg-EsiBN2DGqHUfIoEAOoSpFNa6Em24YqlSRtjWXMOlGVRsfP3IJwZnddEDlmAktYXD9WXcNcQ-MOXIYe9wSzm7yfd1kPA5i46CEaRN9WlueJWu7e39icDklGLSOV2m_BRydAI1vN_irhHmIfzBinL58WsTZ0VKlfqCwnfzMNGhe4EIkU6v5MyRtCQ9NFg8G1JweJTw2849mvj46oDlHJil--RL8BuIbSO23NtXl3TbW25aC9eFhe6hh4wY2tmE0hgXanuzyH_OqdML7MIhjIBBhZyUIGaO7REiUOFUQjtMEW7w3y_BFKZSx6oZg9lDCOO9_Sf5ILnCjii3tf7m6umrGlzsW603_t_zb9dlyc6TbHqLo5zwYAT3xkET_5cHy8fF95VCbHfLsGmEXcAL78ID-cMWZntuFvcd1aPLHC87k9wzoXDgplSlhMd4Gv1cLlw6qSkqXTh-HMU1IwfXSWWY_EEoKLYJ9Fjl9LQt64UhRrDdOPyFc4VuRxyiGHiOoXOlhlsbVOTsz98362vnjXxr6Xho)
 </div>
+
+## Deployment
+
+1. Gunicorn: Utilized Gunicorn, a WSGI HTTP server, to manage requests and responses in a production environment. Gunicorn is preferred over Flask's built-in development server due to its enhanced capability to handle concurrent requests and manage multiple worker processes or threads. Although the current application has a low volume of requests, it was a valuble learning experience to intergrate Guicorn.
+2. MySQL Cloud DB: To ensure data persistence for my deployed application, I used Aiven to host the MySQL database. The PostgreSQL database was hosted locally, which imposes limitations on integrating the data pipeline with the app.
 
 ## Key Features:
 
@@ -126,15 +121,14 @@ which manifested into a flow of data via the following layers:
 
 3. **CORS:** Despite adding Flask-CORS to handle Cross-Origin Resource Sharing, additional configuration was necessary to bypass the default security restrictions for cross-origin requests.
 
+4. **Avoiding Mixed Media Error:** To ensure that the secure HTTPS requests from my frontend were correctly handled and the application’s responses remained secure, I had to add `ProxyFix` middleware to my Flask app. This middleware helps to properly interpret the headers forwarded by Azure Web App's reverse proxy, ensuring that the X-Forwarded-For, X-Forwarded-Proto, and other headers are correctly processed. This setup helps prevent mixed content warnings by ensuring that the application correctly recognizes and handles secure requests.
+
 ## To-Dos
 
 1. **Testing:** Implement unit testing with pyTest.
 2. **Logging strategy:** Enhance the logging strategy to include file-based logging, improving the traceability and debugging of server-side errors.
 3. **Response loading strategy:** Implement pagination for postcodes and suburbs, and explore alternative strategies (e.g., lazy loading) for optimizing data delivery in reporting features.
 4. **Auth logic:** Refine the `token_required` decorator to efficiently return `signed_in_user` details, ensuring seamless authentication flows.
-5. **Bi-directional implementation:** Enhance the create and update functionalities for suburbs to support bi-directional association with postcodes, facilitating richer data relationships.
-6. **JWT Implementation:** Transition to a cookie-based JWT exchange mechanism for improved security and user authentication management.
-7. **CI/CD Pipeline:** Implement a development workflow with Github Actions
 
 ## Changelog
 

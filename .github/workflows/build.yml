@@ -4,12 +4,12 @@ on:
   push:
     branches:
       - main
-  workflow_dispatch:
 
 jobs:
   flake8-lint:
     runs-on: ubuntu-latest
     name: flake8-lint
+
     steps:
       - name: Check out source repository
         uses: actions/checkout@v3
@@ -30,17 +30,14 @@ jobs:
 
     steps:
       - uses: actions/checkout@v4
-
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v2
-
       - name: Log in to container registry
         uses: docker/login-action@v2
         with:
           registry: https://postcheck.azurecr.io/
           username: ${{ secrets.AzureAppService_ContainerUsername_b2a8d0e339fa4da9a3a032efe2d1b3a5 }}
           password: ${{ secrets.AzureAppService_ContainerPassword_e626d86c10f445d8a38a16004a973525 }}
-
       - name: Build and push container image to registry
         uses: docker/build-push-action@v3
         with:

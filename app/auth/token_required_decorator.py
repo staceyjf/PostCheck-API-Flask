@@ -5,7 +5,7 @@ from config import ProductionConfig
 from functools import wraps
 
 
-# Custome decorator for verifying JWT
+# Custom decorator for verifying JWT
 def token_required(f):
     @wraps(f)  # used for the definition of decorators
     def decorated(*args, **kwargs):
