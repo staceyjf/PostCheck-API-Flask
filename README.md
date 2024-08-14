@@ -41,10 +41,10 @@ This API works hand in hand with this Typescript React app (available [here](htt
 ## Build Steps
 
 ```bash
-1. Clone the repo.
-2. Cd into `PostCheck-API-Flask` folder
+1. Clone the repo with ``git clone https://github.com/staceyjf/PostCheck-API-Flask`.
+2. Cd into `cd PostCheck-API-Flask` folder
 3. Set up the virtual envs with with `pipenv install` and activate the virtual environment with `pipenv shell` \*
-4. Add your credential in a .env to connect to a mySQL database. An example env configure can be found at `env_example.txt`
+4. Add your credential in a .env to connect to a mySQL database. An example env configure can be found at `.env.example`
 5. Start the production web server with via `gunicorn manage:app` \*
 ```
 
